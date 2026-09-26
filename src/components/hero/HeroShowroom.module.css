@@ -1,0 +1,454 @@
+.heroSection {
+  position: relative;
+  width: 100%;
+  padding-top: calc(var(--navbar-height) + 1.25rem);
+  padding-bottom: 3.5rem;
+  background-color: var(--color-bg-main);
+  overflow: hidden;
+}
+
+/* Ambient Background Glow */
+.heroAmbientGlow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 650px;
+  background: radial-gradient(ellipse at center, rgba(197, 168, 128, 0.12) 0%, rgba(249, 248, 245, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Editorial Header Above Showroom */
+.heroHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto;
+  gap: 0.6rem;
+}
+
+.eyebrowContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.heroHeadline {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--color-text-primary);
+}
+
+.heroHeadline em {
+  font-style: italic;
+  font-weight: 400;
+  color: #C8A97E;
+}
+
+.heroSubline {
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.1vw, 1.1rem);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  max-width: 660px;
+}
+
+/* ===================================================================
+   INTERACTIVE SHOWROOM THEATER STAGE
+   =================================================================== */
+
+.showroomStageContainer {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Refined Stage Framing: Balanced height so page context remains visible */
+.showroomStage {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  min-height: 420px;
+  max-height: 580px;
+  background-color: #0A0C10;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(200, 169, 126, 0.1);
+  overflow: hidden;
+  user-select: none;
+  touch-action: pan-y;
+  cursor: crosshair;
+  perspective: 1400px;
+  perspective-origin: center center;
+}
+
+.showroomStageGrabbing {
+  cursor: grabbing;
+}
+
+@media (max-width: 768px) {
+  .showroomStage {
+    height: 380px;
+    min-height: 320px;
+    border-radius: 12px;
+  }
+}
+
+/* Subtle Interactive Guide Hint on Stage */
+.stageGuideBadge {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(11, 13, 17, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  z-index: 20;
+  transition: opacity 0.4s ease;
+}
+
+.stageGuideBadgeHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.guideDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #C8A97E;
+  box-shadow: 0 0 8px #C8A97E;
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Camera Viewport with 3D Perspective Tilt */
+.showroomCamera {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Dramatic Curtain Hold Badge on Initial Load */
+.curtainHoldOverlay {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  pointer-events: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.curtainHoldBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(11, 13, 17, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(200, 169, 126, 0.35);
+  border-radius: 30px;
+  color: #DFC39B;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+
+.curtainHoldDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #C8A97E;
+  box-shadow: 0 0 10px #C8A97E;
+  animation: pulseDot 1.2s infinite ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Frame Viewer Container */
+.frameViewer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.frameImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 52%;
+  background-size: cover;
+  background-position: center 52%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+}
+
+/* Realistic Ground Shadow that reacts to 3D pitch/yaw tilt */
+.floorShadow3D {
+  position: absolute;
+  bottom: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 65%;
+  max-width: 850px;
+  height: 60px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.45) 45%, transparent 75%);
+  filter: blur(16px);
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform;
+}
+
+/* Dynamic 3D Specular Light Glint: Tracks Cursor */
+.lightGlint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(200, 169, 126, 0.16) 35%, transparent 70%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  filter: blur(28px);
+  will-change: transform, opacity;
+}
+
+/* Atmospheric Headlight Glow Bloom */
+.headlightGlow {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 150px;
+  background: radial-gradient(ellipse at center, rgba(230, 245, 255, 0.22) 0%, rgba(200, 230, 255, 0.08) 45%, transparent 70%);
+  filter: blur(20px);
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+
+
+/* ===================================================================
+   ACTIONS & SPECIFICATIONS BAR (BELOW THE SHOWROOM)
+   =================================================================== */
+
+.revealedActions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding: 1.25rem 1.75rem;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.vehicleMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.vehicleTitle {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.vehicleSubtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.vehiclePriceTag {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.priceLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.priceAmount {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.priceEmi {
+  font-size: 0.8rem;
+  color: #C8A97E;
+  font-weight: 600;
+}
+
+.ctaButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+/* Specifications Grid */
+.specsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.specCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition: all 0.3s ease;
+}
+
+.specCard:hover {
+  border-color: rgba(200, 169, 126, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.specLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.specValue {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.specDetail {
+  font-size: 0.75rem;
+  color: #C8A97E;
+  font-weight: 500;
+}
+
+@media (max-width: 1024px) {
+  .specsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .actionRow {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem;
+  }
+
+  .ctaButtons {
+    width: 100%;
+  }
+
+  .ctaButtons button,
+  .ctaButtons a {
+    width: 100%;
+  }
+
+  .specsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .specCard {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .specsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modeBtn {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+  }
+}

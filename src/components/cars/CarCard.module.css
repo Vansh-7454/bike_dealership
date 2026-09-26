@@ -1,0 +1,286 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(200, 169, 126, 0.45);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(200, 169, 126, 0.2);
+}
+
+/* Wide / Featured Card Modifier */
+.cardWide {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .cardWide {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Image Container */
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background-color: #121418;
+  overflow: hidden;
+}
+
+.cardWide .imageWrapper {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 320px;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 55%;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  display: block;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
+}
+
+/* Floating Badges */
+.badgeTopLeft {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+}
+
+.badgeTopRight {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.featuredBadge {
+  background: rgba(11, 13, 17, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(200, 169, 126, 0.4);
+  color: #DFC39B;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.statusBadge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.statusAvailable {
+  background: rgba(15, 81, 50, 0.85);
+  color: #D1E7DD;
+  border: 1px solid rgba(25, 135, 84, 0.4);
+}
+
+.statusReserved {
+  background: rgba(102, 77, 3, 0.85);
+  color: #FFF3CD;
+  border: 1px solid rgba(255, 193, 7, 0.4);
+}
+
+.media360Pill {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(11, 13, 17, 0.75);
+  backdrop-filter: blur(8px);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 2;
+}
+
+/* Card Content */
+.content {
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  gap: 1rem;
+}
+
+.cardWide .content {
+  padding: 2rem 2.2rem;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.yearBrand {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C8A97E;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+
+.cardWide .title {
+  font-size: 1.6rem;
+}
+
+.card:hover .title {
+  color: #8C6D3F;
+}
+
+.locationRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+/* Spec Pills Strip */
+.specsStrip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.specPill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.76rem;
+  color: var(--color-text-secondary);
+  background: rgba(0, 0, 0, 0.025);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.specPill strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* Footer / Price & CTA */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.priceLabel {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.priceAmount {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.priceEmi {
+  font-size: 0.74rem;
+  color: #C8A97E;
+  font-weight: 600;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: transparent;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.card:hover .ctaButton {
+  background: var(--color-text-primary);
+  color: #FFFFFF;
+  border-color: var(--color-text-primary);
+}
+
+.ctaArrow {
+  transition: transform 0.25s ease;
+}
+
+.card:hover .ctaArrow {
+  transform: translateX(4px);
+}

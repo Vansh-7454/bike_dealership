@@ -1,0 +1,378 @@
+.pageWrapper {
+  min-height: 100vh;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  flex: 1;
+  padding-top: 90px;
+  padding-bottom: 5rem;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Editorial Hero */
+.editorialHero {
+  padding: 3.5rem 0 4rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.heroHeaderArea {
+  max-width: 880px;
+  margin-bottom: 3rem;
+}
+
+.heroHeadline {
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  margin-top: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.heroHeadline em {
+  font-style: italic;
+  font-family: var(--font-serif, serif);
+  color: #8C6D3F;
+}
+
+.heroLeadText {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+  max-width: 720px;
+}
+
+/* Large Asymmetrical Visual Section */
+.asymmetricShowcase {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.showcaseImageWrapper {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+.showcaseImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.showcaseCaption {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.captionTitle {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.captionBody {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+/* Meaningful Metrics Strip */
+.metricsSection {
+  padding: 4.5rem 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-surface);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.metricItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  border-left: 2px solid rgba(200, 169, 126, 0.4);
+  padding-left: 1.25rem;
+}
+
+.metricValue {
+  font-family: var(--font-heading);
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.metricLabel {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #8C6D3F;
+}
+
+.metricDesc {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* The Manifesto / Philosophy Spread */
+.manifestoSection {
+  padding: 5rem 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.manifestoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 4rem;
+}
+
+.manifestoTitleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.manifestoHeading {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.15;
+}
+
+.manifestoTextColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+}
+
+.manifestoTextColumn p strong {
+  color: var(--color-text-primary);
+}
+
+.curatorSignOff {
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+}
+
+.signOffName {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.signOffRole {
+  font-size: 0.82rem;
+  color: #8C6D3F;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* 6 Forensic Inspection Pillars */
+.pillarsSection {
+  padding: 5rem 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.sectionCenterHeader {
+  text-align: center;
+  max-width: 660px;
+  margin: 0 auto 3.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pillarsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.pillarCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 14px;
+  padding: 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.pillarCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(200, 169, 126, 0.4);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.04);
+}
+
+.pillarIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(200, 169, 126, 0.12);
+  color: #8C6D3F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pillarTitle {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.pillarDesc {
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* Testimonial Quote Spread */
+.quoteSpreadSection {
+  padding: 5rem 0;
+  background: #111418;
+  color: #FFFFFF;
+}
+
+.quoteContainer {
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.quoteSymbol {
+  font-family: var(--font-serif, serif);
+  font-size: 4rem;
+  color: #C8A97E;
+  line-height: 1;
+}
+
+.quoteText {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 2.5vw, 1.95rem);
+  font-weight: 500;
+  line-height: 1.45;
+  color: #E8E6E1;
+}
+
+.quoteAuthor {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.authorName {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.authorTitle {
+  font-size: 0.8rem;
+  color: #DFC39B;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Final Brand CTA */
+.finalCtaSection {
+  padding: 5rem 0;
+  text-align: center;
+}
+
+.ctaInner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.ctaHeadline {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.ctaButtons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+  .asymmetricShowcase {
+    grid-template-columns: 1fr;
+  }
+
+  .manifestoGrid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pillarsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pillarsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+    width: 100%;
+  }
+}

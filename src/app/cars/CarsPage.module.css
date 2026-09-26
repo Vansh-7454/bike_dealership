@@ -1,0 +1,132 @@
+.pageWrapper {
+  min-height: 100vh;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  flex: 1;
+  padding-top: 100px;
+  padding-bottom: 5rem;
+}
+
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Editorial Page Header */
+.pageHeader {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.breadcrumbLink {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumbLink:hover {
+  color: #C8A97E;
+}
+
+.breadcrumbSep {
+  opacity: 0.5;
+}
+
+.breadcrumbCurrent {
+  color: #C8A97E;
+  font-weight: 600;
+}
+
+.titleArea {
+  max-width: 780px;
+}
+
+.headline {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+
+.headline em {
+  font-style: italic;
+  font-family: var(--font-serif, serif);
+  color: #8C6D3F;
+}
+
+.subheadline {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  max-width: 650px;
+}
+
+/* Trust Badges Strip */
+.trustStrip {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.trustItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.trustIcon {
+  color: #C8A97E;
+}
+
+/* Layout for Filter & Inventory */
+.inventoryLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    padding-top: 85px;
+    padding-bottom: 3.5rem;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .trustStrip {
+    gap: 1rem;
+  }
+}

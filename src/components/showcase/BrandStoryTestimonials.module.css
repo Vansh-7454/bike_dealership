@@ -1,0 +1,181 @@
+.section {
+  padding: 5.5rem 0;
+  background: #111418;
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.header {
+  text-align: center;
+  max-width: 660px;
+  margin: 0 auto 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.headline {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 700;
+  color: #FAF9F6;
+  line-height: 1.15;
+}
+
+.headline em {
+  font-style: italic;
+  font-family: var(--font-serif, serif);
+  color: #C8A97E;
+}
+
+.subheadline {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.testimonialsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 5rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(200, 169, 126, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-4px);
+}
+
+.quoteText {
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: #E2DFD8;
+  font-style: italic;
+}
+
+.clientInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.clientName {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.clientVehicle {
+  font-size: 0.78rem;
+  color: #DFC39B;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Final Brand Invitation Strip */
+.invitationBox {
+  background: linear-gradient(135deg, rgba(200, 169, 126, 0.12) 0%, rgba(200, 169, 126, 0.03) 100%);
+  border: 1px solid rgba(200, 169, 126, 0.3);
+  border-radius: 20px;
+  padding: 3.5rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.invitationText {
+  max-width: 580px;
+}
+
+.invitationTitle {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 0.5rem;
+}
+
+.invitationDesc {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+}
+
+.invitationActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.primaryBtn {
+  padding: 13px 26px;
+  background: #C8A97E;
+  color: #111418;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.primaryBtn:hover {
+  background: #DFC39B;
+  transform: translateY(-2px);
+}
+
+.secondaryBtn {
+  padding: 12px 24px;
+  background: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.secondaryBtn:hover {
+  border-color: #C8A97E;
+  color: #C8A97E;
+}
+
+@media (max-width: 1024px) {
+  .testimonialsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .invitationBox {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

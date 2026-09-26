@@ -1,0 +1,69 @@
+/* ===================================================================
+   AUREUS MOTORS DESIGN SYSTEM TOKENS
+   Visual Foundation: Modern Indian Luxury, Architectural, Editorial
+   =================================================================== */
+
+:root {
+  /* Surface & Background Palette (Warm Gallery Neutrals) */
+  --color-bg-main: #F9F8F5;
+  --color-bg-secondary: #F3F0EA;
+  --color-bg-tertiary: #ECE8E0;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-card: #FFFFFF;
+  --color-bg-dark: #121315;
+  --color-bg-dark-elevated: #1B1D22;
+  --color-bg-showroom-dark: #0A0B0D;
+
+  /* Typography / Text Colors */
+  --color-text-primary: #141517;
+  --color-text-secondary: #4A4D53;
+  --color-text-muted: #7E828A;
+  --color-text-inverse: #F8F9FA;
+  --color-text-inverse-muted: #A3A7AF;
+
+  /* Muted Luxury Accents (Warm Champagne Bronze & Architectural Slate) */
+  --color-accent-gold: #C5A880;
+  --color-accent-gold-hover: #B59567;
+  --color-accent-gold-dark: #8E6D3E;
+  --color-accent-gold-subtle: rgba(197, 168, 128, 0.12);
+  --color-accent-gold-glow: rgba(197, 168, 128, 0.28);
+  --color-accent-slate: #1F2429;
+  --color-accent-emerald: #2E7D52;
+
+  /* Borders & Dividers */
+  --color-border-subtle: rgba(20, 21, 23, 0.07);
+  --color-border-medium: rgba(20, 21, 23, 0.14);
+  --color-border-strong: rgba(20, 21, 23, 0.25);
+  --color-border-inverse: rgba(255, 255, 255, 0.12);
+  --color-border-inverse-strong: rgba(255, 255, 255, 0.24);
+
+  /* Typography Hierarchy */
+  --font-family-display: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-serif: var(--font-serif), "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-family-sans: var(--font-sans), "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.08);
+  --shadow-showroom: 0 24px 64px -12px rgba(0, 0, 0, 0.28);
+  --shadow-gold-glow: 0 0 40px rgba(197, 168, 128, 0.25);
+
+  /* Border Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-pill: 9999px;
+
+  /* Layout Spacing */
+  --container-max-width: 1400px;
+  --container-padding: clamp(1.25rem, 4vw, 3rem);
+  --navbar-height: 80px;
+
+  /* Animation Easing */
+  --ease-cinematic: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+}
