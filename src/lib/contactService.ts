@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import connectToDatabase from './mongodb';
 import ContactEnquiry, { IContactEnquiryItem, IContactEnquiryDocument, ContactEnquiryStatus } from '@/models/ContactEnquiry';
 
@@ -10,9 +11,9 @@ export interface CreateContactDto {
   message: string;
 }
 
-export async function createContactEnquiry(dto: CreateContactDto): Promise<IContactEnquiryDocument> {
-  await connectToDatabase();
+let inMemoryContactEnquiries: IContactEnquiryDocument[] = [];
 
+export async function createContactEnquiry(dto: CreateContactDto): Promise<IContactEnquiryDocument> {
   const name = dto.name?.trim();
   const phone = dto.phone?.trim();
   const email = dto.email?.trim().toLowerCase();
@@ -39,28 +40,51 @@ export async function createContactEnquiry(dto: CreateContactDto): Promise<ICont
     throw new Error('Message cannot exceed 2000 characters');
   }
 
-  // Duplicate / spam protection within 30 seconds
-  const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
-  const recentDuplicate = await ContactEnquiry.findOne({
-    email,
-    message,
-    createdAt: { $gte: thirtySecondsAgo },
-  });
-  if (recentDuplicate) {
-    throw new Error('An inquiry with these details was recently received. Our studio will contact you shortly.');
+  try {
+    await connectToDatabase();
+    // Duplicate / spam protection within 30 seconds
+    const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
+    const recentDuplicate = await ContactEnquiry.findOne({
+      email,
+      message,
+      createdAt: { $gte: thirtySecondsAgo },
+    });
+    if (recentDuplicate) {
+      throw new Error('An inquiry with these details was recently received. Our studio will contact you shortly.');
+    }
+
+    const record = await ContactEnquiry.create({
+      name,
+      phone,
+      email,
+      topic: dto.topic || 'General Motorcycle Inquiry',
+      preferredDate: dto.preferredDate?.trim() || undefined,
+      message,
+      status: 'New',
+    });
+
+    return JSON.parse(JSON.stringify(record));
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : '';
+    if (errMsg.includes('recently received')) {
+      throw err;
+    }
+    console.warn('[Torque Two-Wheelers] DB unavailable for contact inquiry, storing in memory:', errMsg);
+    const memoryRecord = {
+      _id: `contact-${Date.now()}` as unknown as mongoose.Types.ObjectId,
+      name,
+      phone,
+      email,
+      topic: dto.topic || 'General Motorcycle Inquiry',
+      preferredDate: dto.preferredDate?.trim() || undefined,
+      message,
+      status: 'New',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    } as unknown as IContactEnquiryDocument;
+    inMemoryContactEnquiries.unshift(memoryRecord);
+    return memoryRecord;
   }
-
-  const record = await ContactEnquiry.create({
-    name,
-    phone,
-    email,
-    topic: dto.topic || 'General Motorcycle Inquiry',
-    preferredDate: dto.preferredDate?.trim() || undefined,
-    message,
-    status: 'New',
-  });
-
-  return JSON.parse(JSON.stringify(record));
 }
 
 export async function getContactEnquiries(filters: {
@@ -69,53 +93,85 @@ export async function getContactEnquiries(filters: {
   page?: number;
   limit?: number;
 } = {}): Promise<{ enquiries: IContactEnquiryDocument[]; total: number; page: number; totalPages: number }> {
-  await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-  const query: Record<string, unknown> = {};
+    const query: Record<string, unknown> = {};
 
-  if (filters.status && filters.status !== 'All') {
-    query.status = filters.status;
+    if (filters.status && filters.status !== 'All') {
+      query.status = filters.status;
+    }
+
+    if (filters.search && filters.search.trim()) {
+      const s = filters.search.trim();
+      query.$or = [
+        { name: { $regex: s, $options: 'i' } },
+        { email: { $regex: s, $options: 'i' } },
+        { phone: { $regex: s, $options: 'i' } },
+        { message: { $regex: s, $options: 'i' } },
+        { topic: { $regex: s, $options: 'i' } },
+      ];
+    }
+
+    const page = Math.max(1, filters.page || 1);
+    const limit = Math.min(50, Math.max(1, filters.limit || 20));
+    const skip = (page - 1) * limit;
+
+    const [enquiries, total] = await Promise.all([
+      ContactEnquiry.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      ContactEnquiry.countDocuments(query),
+    ]);
+
+    return {
+      enquiries: JSON.parse(JSON.stringify(enquiries)),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
+  } catch (err) {
+    console.warn('[Torque Two-Wheelers] DB unavailable for getContactEnquiries, serving memory:', (err as Error).message);
+    const page = Math.max(1, filters.page || 1);
+    const limit = Math.min(50, Math.max(1, filters.limit || 20));
+    const total = inMemoryContactEnquiries.length;
+    return {
+      enquiries: inMemoryContactEnquiries.slice((page - 1) * limit, page * limit),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
   }
-
-  if (filters.search && filters.search.trim()) {
-    const s = filters.search.trim();
-    query.$or = [
-      { name: { $regex: s, $options: 'i' } },
-      { email: { $regex: s, $options: 'i' } },
-      { phone: { $regex: s, $options: 'i' } },
-      { message: { $regex: s, $options: 'i' } },
-      { topic: { $regex: s, $options: 'i' } },
-    ];
-  }
-
-  const page = Math.max(1, filters.page || 1);
-  const limit = Math.min(50, Math.max(1, filters.limit || 20));
-  const skip = (page - 1) * limit;
-
-  const [enquiries, total] = await Promise.all([
-    ContactEnquiry.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
-    ContactEnquiry.countDocuments(query),
-  ]);
-
-  return {
-    enquiries: JSON.parse(JSON.stringify(enquiries)),
-    total,
-    page,
-    totalPages: Math.ceil(total / limit) || 1,
-  };
 }
 
 export async function updateContactEnquiryStatus(
   id: string,
   status: ContactEnquiryStatus
 ): Promise<IContactEnquiryDocument | null> {
-  await connectToDatabase();
-  const updated = await ContactEnquiry.findByIdAndUpdate(id, { $set: { status } }, { new: true }).lean();
-  return updated ? JSON.parse(JSON.stringify(updated)) : null;
+  try {
+    await connectToDatabase();
+    const updated = await ContactEnquiry.findByIdAndUpdate(id, { $set: { status } }, { new: true }).lean();
+    if (updated) return JSON.parse(JSON.stringify(updated));
+  } catch {
+    // Continue to memory
+  }
+
+  const match = inMemoryContactEnquiries.find((c) => String(c._id) === id);
+  if (match) {
+    match.status = status;
+    return match;
+  }
+  return null;
 }
 
 export async function deleteContactEnquiry(id: string): Promise<boolean> {
-  await connectToDatabase();
-  const result = await ContactEnquiry.findByIdAndDelete(id);
-  return Boolean(result);
+  try {
+    await connectToDatabase();
+    const result = await ContactEnquiry.findByIdAndDelete(id);
+    if (result) return true;
+  } catch {
+    // Continue
+  }
+
+  const prevLen = inMemoryContactEnquiries.length;
+  inMemoryContactEnquiries = inMemoryContactEnquiries.filter((c) => String(c._id) !== id);
+  return inMemoryContactEnquiries.length < prevLen;
 }

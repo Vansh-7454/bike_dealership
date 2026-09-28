@@ -45,15 +45,28 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
     cached.promise = (async () => {
       // 1. Attempt connection to configured MONGODB_URI
       if (MONGODB_URI) {
-        try {
-          const directConn = await mongoose.connect(MONGODB_URI, opts);
-          return directConn;
-        } catch {
-          // Fall back gracefully to the embedded MongoDB server
+        const isLocalHost = MONGODB_URI.includes('127.0.0.1') || MONGODB_URI.includes('localhost');
+        const isServerless = process.env.VERCEL === '1' || Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME);
+
+        // Only try connecting if it's not a localhost URI inside a remote serverless cloud
+        if (!isServerless || !isLocalHost) {
+          try {
+            const directConn = await mongoose.connect(MONGODB_URI, opts);
+            return directConn;
+          } catch (e) {
+            console.warn('[Torque Two-Wheelers] Direct MongoDB connection failed:', (e as Error).message);
+          }
         }
       }
 
-      // 2. Start / reuse in-process real MongoDB engine
+      // 2. In serverless clouds like Vercel, embedded MongoMemoryServer cannot run
+      const isServerlessEnv = process.env.VERCEL === '1' || Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME);
+      if (isServerlessEnv) {
+        console.warn('[Torque Two-Wheelers] Running on Vercel without remote MongoDB Atlas. Bypassing embedded daemon.');
+        throw new Error('MONGODB_NOT_AVAILABLE');
+      }
+
+      // 3. Start / reuse in-process real MongoDB engine (local dev only)
       try {
         const { MongoMemoryServer } = await import('mongodb-memory-server');
         if (!cached.mmsInstance) {
@@ -73,7 +86,7 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
         return mmsConn;
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
-        console.error('[Torque Two-Wheelers] MongoDB connection error:', message);
+        console.error('[Torque Two-Wheelers] Local MongoDB memory server error:', message);
         throw err;
       }
     })();

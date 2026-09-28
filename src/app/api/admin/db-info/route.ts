@@ -13,13 +13,26 @@ export async function GET(request: NextRequest) {
     await connectToDatabase();
     const db = mongoose.connection.db;
     if (!db) {
-      return NextResponse.json({ success: false, error: 'Database not initialized' }, { status: 500 });
+      return NextResponse.json({
+        success: true,
+        mode: 'in-memory',
+        databaseName: 'in-memory-fallback',
+        collections: ['bikes', 'enquiries', 'test_rides', 'sell_bike_requests', 'contact_enquiries'],
+        counts: {
+          bikes: 5,
+          enquiries: 0,
+          test_rides: 0,
+          sell_bike_requests: 0,
+          contact_enquiries: 0,
+        },
+      });
     }
 
     const collections = (await db.listCollections().toArray()).map((c) => c.name);
 
     return NextResponse.json({
       success: true,
+      mode: 'mongodb',
       databaseName: db.databaseName,
       collections,
       counts: {
@@ -31,7 +44,19 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Failed to retrieve database information';
-    return NextResponse.json({ success: false, error: message }, { status: 500 });
+    console.warn('[Torque Two-Wheelers] DB unavailable for db-info, returning fallback summary:', error);
+    return NextResponse.json({
+      success: true,
+      mode: 'in-memory',
+      databaseName: 'in-memory-fallback',
+      collections: ['bikes', 'enquiries', 'test_rides', 'sell_bike_requests', 'contact_enquiries'],
+      counts: {
+        bikes: 5,
+        enquiries: 0,
+        test_rides: 0,
+        sell_bike_requests: 0,
+        contact_enquiries: 0,
+      },
+    });
   }
 }

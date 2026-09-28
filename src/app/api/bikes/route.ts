@@ -38,8 +38,14 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : 'Failed to retrieve bikes';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    console.error('[API /api/bikes] GET error caught, attempting clean fallback:', error);
+    try {
+      const fallbackResult = await getBikes({});
+      return NextResponse.json({ success: true, ...fallbackResult });
+    } catch {
+      const msg = error instanceof Error ? error.message : 'Failed to retrieve bikes';
+      return NextResponse.json({ error: msg }, { status: 500 });
+    }
   }
 }
 

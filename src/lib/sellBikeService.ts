@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import connectToDatabase from './mongodb';
 import SellBikeRequest, { ISellBikeItem, ISellBikeDocument, SellBikeStatus } from '@/models/SellBikeRequest';
 
@@ -22,9 +23,9 @@ export interface CreateSellBikeDto {
   message?: string;
 }
 
-export async function createSellBikeRequest(dto: CreateSellBikeDto): Promise<ISellBikeDocument> {
-  await connectToDatabase();
+let inMemorySellRequests: ISellBikeDocument[] = [];
 
+export async function createSellBikeRequest(dto: CreateSellBikeDto): Promise<ISellBikeDocument> {
   const ownerName = dto.ownerName?.trim();
   const phone = dto.phone?.trim();
   const email = dto.email?.trim().toLowerCase();
@@ -75,41 +76,76 @@ export async function createSellBikeRequest(dto: CreateSellBikeDto): Promise<ISe
     throw new Error('Please provide a valid odometer reading (between 0 and 500,000 km)');
   }
 
-  // Duplicate / spam protection within 30 seconds
-  const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
-  const recentDuplicate = await SellBikeRequest.findOne({
-    email,
-    brand,
-    model,
-    createdAt: { $gte: thirtySecondsAgo },
-  });
-  if (recentDuplicate) {
-    throw new Error('A valuation request for this motorcycle was recently received. Our acquisition team will contact you shortly.');
+  try {
+    await connectToDatabase();
+    // Duplicate / spam protection within 30 seconds
+    const thirtySecondsAgo = new Date(Date.now() - 30 * 1000);
+    const recentDuplicate = await SellBikeRequest.findOne({
+      email,
+      brand,
+      model,
+      createdAt: { $gte: thirtySecondsAgo },
+    });
+    if (recentDuplicate) {
+      throw new Error('A valuation request for this motorcycle was recently received. Our acquisition team will contact you shortly.');
+    }
+
+    const request = await SellBikeRequest.create({
+      ownerName,
+      phone,
+      email,
+      location,
+      brand,
+      bikeBrand: brand,
+      model,
+      bikeModel: model,
+      variant,
+      year: rawYear,
+      bikeYear: rawYear,
+      kilometers,
+      fuelType,
+      transmission,
+      bikeType,
+      engineCC: engineCC || undefined,
+      expectedPrice,
+      message,
+      status: 'New',
+    });
+
+    return JSON.parse(JSON.stringify(request));
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : '';
+    if (errMsg.includes('recently received')) {
+      throw err;
+    }
+    console.warn('[Torque Two-Wheelers] DB unavailable for sell request, storing in memory:', errMsg);
+    const memoryRecord = {
+      _id: `sell-${Date.now()}` as unknown as mongoose.Types.ObjectId,
+      ownerName,
+      phone,
+      email,
+      location,
+      brand,
+      bikeBrand: brand,
+      model,
+      bikeModel: model,
+      variant,
+      year: rawYear,
+      bikeYear: rawYear,
+      kilometers,
+      fuelType,
+      transmission,
+      bikeType,
+      engineCC: engineCC || undefined,
+      expectedPrice,
+      message,
+      status: 'New',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    } as unknown as ISellBikeDocument;
+    inMemorySellRequests.unshift(memoryRecord);
+    return memoryRecord;
   }
-
-  const request = await SellBikeRequest.create({
-    ownerName,
-    phone,
-    email,
-    location,
-    brand,
-    bikeBrand: brand,
-    model,
-    bikeModel: model,
-    variant,
-    year: rawYear,
-    bikeYear: rawYear,
-    kilometers,
-    fuelType,
-    transmission,
-    bikeType,
-    engineCC: engineCC || undefined,
-    expectedPrice,
-    message,
-    status: 'New',
-  });
-
-  return JSON.parse(JSON.stringify(request));
 }
 
 export async function getSellBikeRequests(filters: {
@@ -118,50 +154,74 @@ export async function getSellBikeRequests(filters: {
   page?: number;
   limit?: number;
 } = {}): Promise<{ requests: ISellBikeDocument[]; total: number; page: number; totalPages: number }> {
-  await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-  const query: Record<string, unknown> = {};
+    const query: Record<string, unknown> = {};
 
-  if (filters.status && filters.status !== 'All') {
-    query.status = filters.status;
+    if (filters.status && filters.status !== 'All') {
+      query.status = filters.status;
+    }
+
+    if (filters.search && filters.search.trim()) {
+      const s = filters.search.trim();
+      query.$or = [
+        { ownerName: { $regex: s, $options: 'i' } },
+        { email: { $regex: s, $options: 'i' } },
+        { phone: { $regex: s, $options: 'i' } },
+        { location: { $regex: s, $options: 'i' } },
+        { brand: { $regex: s, $options: 'i' } },
+        { model: { $regex: s, $options: 'i' } },
+        { bikeBrand: { $regex: s, $options: 'i' } },
+        { bikeModel: { $regex: s, $options: 'i' } },
+      ];
+    }
+
+    const page = Math.max(1, filters.page || 1);
+    const limit = Math.min(50, Math.max(1, filters.limit || 20));
+    const skip = (page - 1) * limit;
+
+    const [requests, total] = await Promise.all([
+      SellBikeRequest.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      SellBikeRequest.countDocuments(query),
+    ]);
+
+    return {
+      requests: JSON.parse(JSON.stringify(requests)),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
+  } catch (err) {
+    console.warn('[Torque Two-Wheelers] DB unavailable for getSellBikeRequests, serving memory:', (err as Error).message);
+    const page = Math.max(1, filters.page || 1);
+    const limit = Math.min(50, Math.max(1, filters.limit || 20));
+    const total = inMemorySellRequests.length;
+    return {
+      requests: inMemorySellRequests.slice((page - 1) * limit, page * limit),
+      total,
+      page,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
   }
-
-  if (filters.search && filters.search.trim()) {
-    const s = filters.search.trim();
-    query.$or = [
-      { ownerName: { $regex: s, $options: 'i' } },
-      { email: { $regex: s, $options: 'i' } },
-      { phone: { $regex: s, $options: 'i' } },
-      { location: { $regex: s, $options: 'i' } },
-      { brand: { $regex: s, $options: 'i' } },
-      { model: { $regex: s, $options: 'i' } },
-      { bikeBrand: { $regex: s, $options: 'i' } },
-      { bikeModel: { $regex: s, $options: 'i' } },
-    ];
-  }
-
-  const page = Math.max(1, filters.page || 1);
-  const limit = Math.min(50, Math.max(1, filters.limit || 20));
-  const skip = (page - 1) * limit;
-
-  const [requests, total] = await Promise.all([
-    SellBikeRequest.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
-    SellBikeRequest.countDocuments(query),
-  ]);
-
-  return {
-    requests: JSON.parse(JSON.stringify(requests)),
-    total,
-    page,
-    totalPages: Math.ceil(total / limit) || 1,
-  };
 }
 
 export async function updateSellBikeStatus(
   id: string,
   status: SellBikeStatus
 ): Promise<ISellBikeDocument | null> {
-  await connectToDatabase();
-  const updated = await SellBikeRequest.findByIdAndUpdate(id, { $set: { status } }, { new: true }).lean();
-  return updated ? JSON.parse(JSON.stringify(updated)) : null;
+  try {
+    await connectToDatabase();
+    const updated = await SellBikeRequest.findByIdAndUpdate(id, { $set: { status } }, { new: true }).lean();
+    if (updated) return JSON.parse(JSON.stringify(updated));
+  } catch {
+    // Continue to memory
+  }
+
+  const match = inMemorySellRequests.find((r) => String(r._id) === id);
+  if (match) {
+    match.status = status;
+    return match;
+  }
+  return null;
 }
