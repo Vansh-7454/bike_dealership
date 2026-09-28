@@ -353,9 +353,11 @@
 
 .formRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1.25rem;
   margin-bottom: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .formGroup {
@@ -363,6 +365,9 @@
   flex-direction: column;
   gap: 0.4rem;
   margin-bottom: 1.25rem;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .formLabel {
@@ -372,6 +377,10 @@
 }
 
 .formInput, .formSelect, .formTextarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 12px 14px;
   border-radius: 8px;
   border: 1px solid #CBD5E1;
