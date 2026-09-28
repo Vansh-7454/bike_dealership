@@ -62,10 +62,10 @@ export const BrandStoryTestimonials: React.FC = () => {
             </p>
           </div>
           <div className={styles.invitationActions}>
-            <Link href="/bikes" className={styles.ctaPrimary}>
+            <Link href="/bikes" className={styles.primaryBtn}>
               Explore All Motorcycles &rarr;
             </Link>
-            <Link href="/sell-your-bike" className={styles.ctaSecondary}>
+            <Link href="/sell-your-bike" className={styles.secondaryBtn}>
               Sell Your Bike
             </Link>
           </div>
