@@ -222,7 +222,7 @@ export const EditorialBikeHero: React.FC<EditorialBikeHeroProps> = ({
     }
 
     return DEFAULT_SPOTLIGHTS;
-  }, [bikes, bike]);
+  }, [bikes]);
 
   // Current active spotlight
   const currentSpotlight = spotlights[activeSpotlightIndex] || spotlights[0] || DEFAULT_SPOTLIGHTS[0];
@@ -255,16 +255,21 @@ export const EditorialBikeHero: React.FC<EditorialBikeHeroProps> = ({
     };
   }, [currentSpotlight, displayBrand, displayModel, displayYear, displayImage]);
 
-  const lastNotifiedIdRef = useRef<string | null>(null);
-
-  // Notify parent of active bike changes only when active bike ID actually changes
+  const onActiveBikeChangeRef = useRef(onActiveBikeChange);
   useEffect(() => {
-    const currentId = currentSpotlight?.id;
-    if (onActiveBikeChange && currentId && currentId !== lastNotifiedIdRef.current) {
-      lastNotifiedIdRef.current = currentId;
-      onActiveBikeChange(currentBikePayload as unknown as IBike);
+    onActiveBikeChangeRef.current = onActiveBikeChange;
+  });
+
+  const lastNotifiedSlugRef = useRef<string | null>(null);
+
+  // Notify parent of active bike changes only when active bike slug actually changes
+  useEffect(() => {
+    const slug = currentSpotlight?.slug || currentSpotlight?.id;
+    if (slug && slug !== lastNotifiedSlugRef.current && onActiveBikeChangeRef.current) {
+      lastNotifiedSlugRef.current = slug;
+      onActiveBikeChangeRef.current(currentBikePayload as unknown as IBike);
     }
-  }, [activeSpotlightIndex, currentBikePayload, onActiveBikeChange, currentSpotlight?.id]);
+  }, [activeSpotlightIndex, currentBikePayload, currentSpotlight?.id, currentSpotlight?.slug]);
 
   // Preload all spotlight images in advance for zero-flash transitions
   useEffect(() => {

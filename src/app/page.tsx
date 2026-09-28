@@ -103,8 +103,16 @@ export default function HomePage() {
   };
 
   const handleActiveBikeChange = useCallback((bike: IBike) => {
-    setHeroBike((prev) => (prev?.id === bike.id || prev?._id === bike.id ? prev : bike));
-    setSelectedTestRideBike((prev) => (prev?.id === bike.id || prev?._id === bike.id ? prev : bike));
+    const isSameBike = (prev: IBike | null | undefined) => {
+      if (!prev || !bike) return false;
+      if (prev.slug && bike.slug && prev.slug === bike.slug) return true;
+      if (prev._id && bike._id && prev._id === bike._id) return true;
+      if (prev.id && bike.id && prev.id === bike.id) return true;
+      return false;
+    };
+
+    setHeroBike((prev) => (isSameBike(prev) ? prev : bike));
+    setSelectedTestRideBike((prev) => (isSameBike(prev) ? prev : bike));
   }, []);
 
   return (
@@ -114,7 +122,6 @@ export default function HomePage() {
 
       {/* Editorial Motorcycle Hero with Auto-Rotation */}
       <EditorialBikeHero
-        bike={heroBike}
         bikes={heroBikes}
         onActiveBikeChange={handleActiveBikeChange}
         onBookTestRide={(bike) => handleOpenTestRide(bike || heroBike)}
