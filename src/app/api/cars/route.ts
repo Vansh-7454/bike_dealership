@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const featured = searchParams.has('featured')
       ? searchParams.get('featured') === 'true'
       : undefined;
-    const status = searchParams.get('status') || 'Available';
+    const status = searchParams.get('status') || undefined;
     const limit = searchParams.get('limit') ? Number(searchParams.get('limit')) : 12;
     const page = searchParams.get('page') ? Number(searchParams.get('page')) : 1;
 

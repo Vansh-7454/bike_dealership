@@ -250,7 +250,7 @@ export const DEMO_CARS: ISeedCar[] = [
     images: [
       '/images/inventory/honda_city_sedan_1790317886201.jpg',
       '/images/inventory/city_sedan.jpg',
-      '/images/inventory/xuv700_interior.jpg',
+      '/images/inventory/honda_city_interior.jpg',
     ],
     media360: { enabled: false },
     engineSpecs: {
@@ -335,8 +335,8 @@ export const DEMO_CARS: ISeedCar[] = [
     ],
     images: [
       '/images/inventory/hyryder_blue.jpg',
+      '/images/inventory/toyota_hyryder_side.jpg',
       '/images/inventory/indian_suv_showroom_1790315806541.jpg',
-      '/images/inventory/xuv700_interior.jpg',
     ],
     media360: { enabled: false },
     engineSpecs: {
@@ -378,7 +378,7 @@ export const DEMO_CARS: ISeedCar[] = [
     ],
     images: [
       '/images/inventory/verna_sedan.jpg',
-      '/images/inventory/city_sedan.jpg',
+      '/images/inventory/hyundai_verna_rear.jpg',
       '/images/inventory/car_interior_cockpit_1790317987200.jpg',
     ],
     media360: { enabled: false },
@@ -421,8 +421,8 @@ export const DEMO_CARS: ISeedCar[] = [
     ],
     images: [
       '/images/inventory/kushaq_red.jpg',
-      '/images/inventory/taigun_yellow.jpg',
-      '/images/inventory/xuv700_interior.jpg',
+      '/images/inventory/skoda_kushaq_rear.jpg',
+      '/images/inventory/car_interior_cockpit_1790317987200.jpg',
     ],
     media360: { enabled: false },
     engineSpecs: {
@@ -464,7 +464,7 @@ export const DEMO_CARS: ISeedCar[] = [
     ],
     images: [
       '/images/inventory/taigun_yellow.jpg',
-      '/images/inventory/kushaq_red.jpg',
+      '/images/inventory/vw_taigun_rear.jpg',
       '/images/inventory/car_interior_cockpit_1790317987200.jpg',
     ],
     media360: { enabled: false },

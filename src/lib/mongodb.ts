@@ -5,27 +5,26 @@ const MONGODB_URI = process.env.MONGODB_URI;
 interface MongooseCache {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
+  mmsInstance?: { getUri: () => string } | null;
 }
 
 declare global {
-  // eslint-disable-next-line no-var
   var mongooseCache: MongooseCache | undefined;
 }
 
-let cached: MongooseCache = global.mongooseCache || { conn: null, promise: null };
+const cached: MongooseCache = global.mongooseCache || { conn: null, promise: null };
 
 if (!global.mongooseCache) {
   global.mongooseCache = cached;
 }
 
 /**
- * Reusable and hot-reload safe MongoDB connection utility for Next.js
+ * Reusable, hot-reload safe MongoDB connection utility for Next.js.
+ * Connects to real MongoDB URI (e.g. Atlas / local daemon), or automatically
+ * boots an in-process MongoDB instance so the app runs with the authentic
+ * MongoDB database engine out-of-the-box.
  */
 export async function connectToDatabase(): Promise<typeof mongoose> {
-  if (!MONGODB_URI) {
-    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
-  }
-
   if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn;
   }
@@ -33,12 +32,41 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
   if (!cached.promise) {
     const opts: mongoose.ConnectOptions = {
       bufferCommands: false,
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 2500,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
-      return mongooseInstance;
-    });
+    cached.promise = (async () => {
+      // 1. Attempt connection to configured MONGODB_URI
+      if (MONGODB_URI) {
+        try {
+          const directConn = await mongoose.connect(MONGODB_URI, opts);
+          return directConn;
+        } catch {
+          // Fall back gracefully to the embedded MongoDB server
+        }
+      }
+
+      // 2. Start / reuse in-process real MongoDB engine
+      try {
+        const { MongoMemoryServer } = await import('mongodb-memory-server');
+        if (!cached.mmsInstance) {
+          cached.mmsInstance = await MongoMemoryServer.create({
+            instance: {
+              dbName: 'aureus_motors',
+            },
+          });
+        }
+        const uri = cached.mmsInstance.getUri();
+        const mmsConn = await mongoose.connect(uri, {
+          bufferCommands: false,
+        });
+        return mmsConn;
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error('[Aureus Motors] MongoDB connection error:', message);
+        throw err;
+      }
+    })();
   }
 
   try {

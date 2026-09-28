@@ -3,7 +3,7 @@ import mongoose, { Schema, Model } from 'mongoose';
 export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'Hybrid' | 'CNG';
 export type TransmissionType = 'Automatic' | 'Manual';
 export type BodyType = 'SUV' | 'Sedan' | 'Hatchback' | 'Crossover' | 'Coupe';
-export type VehicleStatus = 'Available' | 'Sold' | 'Reserved';
+export type VehicleStatus = 'Available' | 'Sold' | 'Reserved' | 'Archived';
 
 export interface IMedia360 {
   enabled: boolean;
@@ -100,7 +100,7 @@ const CarSchema = new Schema<ICarItem>(
     featured: { type: Boolean, default: false, index: true },
     status: {
       type: String,
-      enum: ['Available', 'Sold', 'Reserved'],
+      enum: ['Available', 'Sold', 'Reserved', 'Archived'],
       default: 'Available',
       index: true,
     },

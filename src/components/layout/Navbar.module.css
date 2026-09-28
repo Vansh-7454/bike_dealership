@@ -148,6 +148,29 @@
   border: 1px solid var(--color-border-subtle);
 }
 
+.adminLoginBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-text-secondary);
+  padding: 0.4rem 0.85rem;
+  background: rgba(20, 21, 23, 0.04);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-subtle);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.adminLoginBtn:hover {
+  color: #a37a3e;
+  border-color: #c8a97e;
+  background: rgba(200, 169, 126, 0.1);
+  transform: translateY(-1px);
+}
+
 .statusDot {
   width: 6px;
   height: 6px;
@@ -266,6 +289,18 @@
   text-decoration: none;
 }
 
+.mobileAdminLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #a37a3e;
+  text-decoration: none;
+  padding: 0.4rem 0;
+  margin-top: 0.5rem;
+}
+
 /* Media Queries */
 @media (min-width: 1024px) {
   .locationBadge {
@@ -279,6 +314,10 @@
   }
   
   .locationBadge {
+    display: none;
+  }
+
+  .adminLoginBtn {
     display: none;
   }
 

@@ -62,7 +62,11 @@ export const CarCard: React.FC<CarCardProps> = ({ car, variant = 'normal' }) => 
         <div className={styles.badgeTopRight}>
           <span
             className={`${styles.statusBadge} ${
-              car.status === 'Available' ? styles.statusAvailable : styles.statusReserved
+              car.status === 'Available'
+                ? styles.statusAvailable
+                : car.status === 'Sold'
+                ? styles.statusSold
+                : styles.statusReserved
             }`}
           >
             {car.status}

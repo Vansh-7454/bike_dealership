@@ -113,12 +113,12 @@ export async function createEnquiry(input: CreateEnquiryInput): Promise<IEnquiry
       source: source || 'car_detail',
     });
 
-    const doc: any = newEnquiry.toObject();
+    const doc = newEnquiry.toObject() as unknown as Record<string, unknown>;
     const formatted: IEnquiryDocument = {
-      ...doc,
-      _id: doc._id.toString(),
-      createdAt: doc.createdAt ? new Date(doc.createdAt) : new Date(),
-      updatedAt: doc.updatedAt ? new Date(doc.updatedAt) : new Date(),
+      ...(doc as unknown as IEnquiryDocument),
+      _id: String(doc._id),
+      createdAt: doc.createdAt ? new Date(doc.createdAt as string | Date) : new Date(),
+      updatedAt: doc.updatedAt ? new Date(doc.updatedAt as string | Date) : new Date(),
     };
 
     // Keep global cache in sync
@@ -167,15 +167,17 @@ export async function getEnquiries(status?: string): Promise<IEnquiryDocument[]>
   try {
     await connectToDatabase();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filter: Record<string, any> = {};
+    const filter: Record<string, unknown> = {};
     if (status && status !== 'all') {
       filter.status = status;
     }
     const raw = await Enquiry.find(filter).sort({ createdAt: -1 }).lean();
-    return raw.map((d: any) => ({
-      ...d,
-      _id: d._id.toString(),
-    })) as unknown as IEnquiryDocument[];
+    return (raw as unknown as Array<Record<string, unknown>>).map((d) => ({
+      ...(d as unknown as IEnquiryDocument),
+      _id: String(d._id),
+      createdAt: d.createdAt ? new Date(d.createdAt as string | Date) : new Date(),
+      updatedAt: d.updatedAt ? new Date(d.updatedAt as string | Date) : new Date(),
+    }));
   } catch {
     let list = global.__enquiriesStore || [];
     if (status && status !== 'all') {
@@ -183,4 +185,68 @@ export async function getEnquiries(status?: string): Promise<IEnquiryDocument[]>
     }
     return list;
   }
+}
+
+/**
+ * Update enquiry status in MongoDB (New, Contacted, Closed)
+ */
+export async function updateEnquiryStatus(
+  id: string,
+  status: 'New' | 'Contacted' | 'Closed'
+): Promise<IEnquiryDocument | null> {
+  await connectToDatabase();
+  try {
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      const updated = await Enquiry.findByIdAndUpdate(
+        id,
+        { $set: { status, updatedAt: new Date() } },
+        { new: true, lean: true }
+      );
+      if (updated) {
+        return {
+          ...(updated as unknown as IEnquiryDocument),
+          _id: String((updated as unknown as { _id: unknown })._id),
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('[Aureus Motors] updateEnquiryStatus MongoDB error:', err);
+  }
+
+  // Update fallback store if present
+  if (global.__enquiriesStore) {
+    const item = global.__enquiriesStore.find((e) => e._id === id);
+    if (item) {
+      item.status = status;
+      item.updatedAt = new Date();
+      return item;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Delete an enquiry document
+ */
+export async function deleteEnquiry(id: string): Promise<boolean> {
+  await connectToDatabase();
+  try {
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      const res = await Enquiry.findByIdAndDelete(id);
+      if (res) return true;
+    }
+  } catch (err) {
+    console.warn('[Aureus Motors] deleteEnquiry MongoDB error:', err);
+  }
+
+  if (global.__enquiriesStore) {
+    const idx = global.__enquiriesStore.findIndex((e) => e._id === id);
+    if (idx !== -1) {
+      global.__enquiriesStore.splice(idx, 1);
+      return true;
+    }
+  }
+
+  return false;
 }

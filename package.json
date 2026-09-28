@@ -6,10 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:admin": "node scripts/seedAdmin.mjs"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "bcryptjs": "^3.0.3",
     "gsap": "^3.15.0",
+    "jose": "^6.2.12",
+    "mongodb-memory-server": "^11.3.0",
     "mongoose": "^9.10.2",
     "next": "16.3.6",
     "react": "19.2.8",

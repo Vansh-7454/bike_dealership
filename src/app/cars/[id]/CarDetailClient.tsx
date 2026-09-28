@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './CarDetailPage.module.css';
 import { Navbar } from '@/components/layout/Navbar';
@@ -18,6 +18,80 @@ export const CarDetailClient: React.FC<CarDetailClientProps> = ({ car }) => {
   const [isTestDriveOpen, setIsTestDriveOpen] = useState(false);
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'photos' | '360'>('photos');
+
+  // Real 360 multi-angle turntable sequence
+  const hasReal360 = Boolean(car.media360?.enabled && car.media360?.frames && car.media360.frames.length > 0);
+  const frames = hasReal360 && car.media360?.frames ? car.media360.frames : [];
+  const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
+  const [is360Loaded, setIs360Loaded] = useState(false);
+  const [isDragging360, setIsDragging360] = useState(false);
+  const dragStartXRef = useRef<number | null>(null);
+  const startFrameIndexRef = useRef<number>(0);
+
+  // Preload 360 frames
+  useEffect(() => {
+    if (!hasReal360 || frames.length === 0) return;
+    let loaded = 0;
+    frames.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => {
+        loaded += 1;
+        if (loaded >= Math.min(2, frames.length)) {
+          setIs360Loaded(true);
+        }
+      };
+    });
+  }, [hasReal360, frames]);
+
+  // Desktop horizontal mouse drag
+  const handle360MouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging360(true);
+    dragStartXRef.current = e.clientX;
+    startFrameIndexRef.current = currentFrameIndex;
+  };
+
+  const handle360MouseMove = (e: React.MouseEvent) => {
+    if (!isDragging360 || dragStartXRef.current === null || frames.length === 0) return;
+    const deltaX = e.clientX - dragStartXRef.current;
+    const stepSize = 25; // 25px per frame step
+    const steps = Math.floor(deltaX / stepSize);
+    const frameOffset = -steps;
+    const total = frames.length;
+    const nextIdx = ((startFrameIndexRef.current + frameOffset) % total + total) % total;
+    setCurrentFrameIndex(nextIdx);
+  };
+
+  const handle360MouseUp = () => {
+    setIsDragging360(false);
+    dragStartXRef.current = null;
+  };
+
+  // Mobile horizontal swipe
+  const handle360TouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      setIsDragging360(true);
+      dragStartXRef.current = e.touches[0].clientX;
+      startFrameIndexRef.current = currentFrameIndex;
+    }
+  };
+
+  const handle360TouchMove = (e: React.TouchEvent) => {
+    if (!isDragging360 || dragStartXRef.current === null || frames.length === 0) return;
+    const deltaX = e.touches[0].clientX - dragStartXRef.current;
+    const stepSize = 20; // 20px per frame step on mobile
+    const steps = Math.floor(deltaX / stepSize);
+    const frameOffset = -steps;
+    const total = frames.length;
+    const nextIdx = ((startFrameIndexRef.current + frameOffset) % total + total) % total;
+    setCurrentFrameIndex(nextIdx);
+  };
+
+  const handle360TouchEnd = () => {
+    setIsDragging360(false);
+    dragStartXRef.current = null;
+  };
 
   const images = car.images && car.images.length > 0 ? car.images : ['/images/inventory/xuv700_hero.jpg'];
 
@@ -161,11 +235,18 @@ export const CarDetailClient: React.FC<CarDetailClientProps> = ({ car }) => {
                             fontWeight: 700,
                             padding: '4px 10px',
                             borderRadius: '20px',
-                            background: car.status === 'Available' ? 'rgba(25, 135, 84, 0.9)' : 'rgba(255, 193, 7, 0.9)',
+                            background:
+                              car.status === 'Available'
+                                ? 'rgba(25, 135, 84, 0.9)'
+                                : car.status === 'Sold'
+                                ? '#DC3545'
+                                : 'rgba(255, 193, 7, 0.9)',
                             color: '#FFF',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
                           }}
                         >
-                          {car.status}
+                          {car.status === 'Sold' ? 'SOLD & DELIVERED' : car.status}
                         </span>
                       </div>
 
@@ -227,25 +308,146 @@ export const CarDetailClient: React.FC<CarDetailClientProps> = ({ car }) => {
                           <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
                           <path d="M2 12h20" />
                         </svg>
-                        360° Studio Turntable Architecture
+                        360° Studio Turntable
                       </span>
-                      <span className={styles.media360Badge}>Interactive Turntable Ready</span>
+                      <span className={styles.media360Badge}>
+                        {hasReal360 ? 'Interactive Multi-Angle' : 'Static Gallery Active'}
+                      </span>
                     </div>
 
-                    <div className={styles.media360Canvas}>
-                      <img src={images[0]} alt={`${car.title} 360 view`} />
-                      <div className={styles.media360Instruction}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-                        </svg>
-                        Multi-angle rotation sequence prepared for VIP digital showroom
+                    {hasReal360 ? (
+                      <div>
+                        {/* Interactive Turntable Canvas */}
+                        <div
+                          className={styles.media360Canvas}
+                          style={{
+                            cursor: isDragging360 ? 'grabbing' : 'grab',
+                            userSelect: 'none',
+                            WebkitUserSelect: 'none',
+                            touchAction: 'pan-y',
+                          }}
+                          onMouseDown={handle360MouseDown}
+                          onMouseMove={handle360MouseMove}
+                          onMouseUp={handle360MouseUp}
+                          onMouseLeave={handle360MouseUp}
+                          onTouchStart={handle360TouchStart}
+                          onTouchMove={handle360TouchMove}
+                          onTouchEnd={handle360TouchEnd}
+                        >
+                          {/* Angle / Frame Pill Badge */}
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: 14,
+                              right: 14,
+                              background: 'rgba(0, 0, 0, 0.75)',
+                              color: '#C8A97E',
+                              border: '1px solid rgba(200, 169, 126, 0.4)',
+                              borderRadius: '20px',
+                              padding: '4px 12px',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                              zIndex: 10,
+                            }}
+                          >
+                            {Math.round(currentFrameIndex * (360 / frames.length))}° Angle ({currentFrameIndex + 1}/{frames.length})
+                          </div>
+
+                          <img
+                            src={frames[currentFrameIndex]}
+                            alt={`${car.title} 360 angle ${currentFrameIndex + 1}`}
+                            draggable={false}
+                            style={{ pointerEvents: 'none' }}
+                          />
+
+                          <div className={styles.media360Instruction}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                            </svg>
+                            <span>Drag horizontally or swipe to rotate 360°</span>
+                          </div>
+                        </div>
+
+                        {/* Interactive Scrub Angle Ring Dots */}
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            marginTop: '1rem',
+                          }}
+                        >
+                          {frames.map((_, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setCurrentFrameIndex(idx)}
+                              aria-label={`Rotate to angle ${idx + 1}`}
+                              style={{
+                                width: currentFrameIndex === idx ? '24px' : '8px',
+                                height: '8px',
+                                borderRadius: '4px',
+                                backgroundColor: currentFrameIndex === idx ? '#C8A97E' : 'rgba(255, 255, 255, 0.2)',
+                                border: 'none',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                padding: 0,
+                              }}
+                            />
+                          ))}
+                        </div>
+
+                        <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: '1.5', marginTop: '0.75rem' }}>
+                          Drag left or right to scrub through certified multi-angle turntable frames. Every wheel profile, rear quarter, and daylight reflection calibrated for inspection.
+                        </p>
                       </div>
-                    </div>
-
-                    <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: '1.5' }}>
-                      This vehicle profile is provisioned with our high-definition 360° rotational inspection
-                      pipeline. Every surface, tyre depth, and chassis reflection is calibrated for seamless digital evaluation.
-                    </p>
+                    ) : (
+                      /* Honest Fallback Without Fake Rotation */
+                      <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                        <div
+                          style={{
+                            width: '54px',
+                            height: '54px',
+                            borderRadius: '50%',
+                            background: 'rgba(200, 169, 126, 0.12)',
+                            color: '#C8A97E',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            margin: '0 auto 1rem',
+                          }}
+                        >
+                          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                            <path d="M2 12h20" />
+                          </svg>
+                        </div>
+                        <h4 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: '0.4rem' }}>
+                          Studio 360 Capture in Production
+                        </h4>
+                        <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.88rem', maxWidth: '440px', margin: '0 auto 1.25rem', lineHeight: '1.6' }}>
+                          This unit is showcased using our verified 160-point high-resolution static photo dossier. Multi-angle 360 rotational turntable sequence is scheduled.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab('photos')}
+                          style={{
+                            padding: '8px 18px',
+                            background: '#1A1A1A',
+                            color: '#FFFFFF',
+                            borderRadius: '6px',
+                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            fontSize: '0.82rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          View High-Resolution Photo Gallery
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -371,28 +573,59 @@ export const CarDetailClient: React.FC<CarDetailClientProps> = ({ car }) => {
 
                 {/* CTA Action Buttons */}
                 <div className={styles.ctaArea}>
-                  <button
-                    type="button"
-                    onClick={() => setIsTestDriveOpen(true)}
-                    className={styles.primaryCta}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <circle cx="12" cy="12" r="10" />
-                      <polygon points="10 8 16 12 10 16 10 8" />
-                    </svg>
-                    Book a Test Drive
-                  </button>
+                  {car.status === 'Sold' ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
+                      <div
+                        style={{
+                          background: 'rgba(220, 53, 69, 0.12)',
+                          border: '1px solid rgba(220, 53, 69, 0.35)',
+                          borderRadius: '8px',
+                          padding: '12px 14px',
+                          color: '#f87171',
+                          textAlign: 'center',
+                          fontWeight: 600,
+                          fontSize: '0.88rem',
+                        }}
+                      >
+                        Vehicle Sold & Delivered to Patron
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsEnquiryOpen(true)}
+                        className={styles.primaryCta}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        Inquire for Similar Vehicle
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setIsTestDriveOpen(true)}
+                        className={styles.primaryCta}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <circle cx="12" cy="12" r="10" />
+                          <polygon points="10 8 16 12 10 16 10 8" />
+                        </svg>
+                        Book a Test Drive
+                      </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setIsEnquiryOpen(true)}
-                    className={styles.secondaryCta}
-                  >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
-                    I&apos;m Interested
-                  </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsEnquiryOpen(true)}
+                        className={styles.secondaryCta}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        I&apos;m Interested
+                      </button>
+                    </>
+                  )}
                 </div>
 
                 {/* Direct Concierge Line */}

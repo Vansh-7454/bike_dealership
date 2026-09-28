@@ -127,13 +127,13 @@ export async function createTestDriveBooking(input: CreateTestDriveInput): Promi
       status: 'Pending',
     });
 
-    const doc: any = newBooking.toObject();
+    const doc = newBooking.toObject() as unknown as Record<string, unknown>;
     const formatted: ITestDriveBookingDocument = {
-      ...doc,
-      _id: doc._id.toString(),
-      preferredDate: new Date(doc.preferredDate),
-      createdAt: doc.createdAt ? new Date(doc.createdAt) : new Date(),
-      updatedAt: doc.updatedAt ? new Date(doc.updatedAt) : new Date(),
+      ...(doc as unknown as ITestDriveBookingDocument),
+      _id: String(doc._id),
+      preferredDate: new Date(doc.preferredDate as string | Date),
+      createdAt: doc.createdAt ? new Date(doc.createdAt as string | Date) : new Date(),
+      updatedAt: doc.updatedAt ? new Date(doc.updatedAt as string | Date) : new Date(),
     };
 
     global.__testDrivesStore = [formatted, ...(global.__testDrivesStore || [])];
@@ -185,16 +185,18 @@ export async function getTestDriveBookings(status?: string): Promise<ITestDriveB
   try {
     await connectToDatabase();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filter: Record<string, any> = {};
+    const filter: Record<string, unknown> = {};
     if (status && status !== 'all') {
       filter.status = status;
     }
-    const raw = await TestDriveBooking.find(filter).sort({ createdAt: -1 }).lean();
-    return raw.map((d: any) => ({
-      ...d,
-      _id: d._id.toString(),
-      preferredDate: new Date(d.preferredDate),
-    })) as unknown as ITestDriveBookingDocument[];
+    const raw = await TestDriveBooking.find(filter).sort({ preferredDate: 1, createdAt: -1 }).lean();
+    return (raw as unknown as Array<Record<string, unknown>>).map((d) => ({
+      ...(d as unknown as ITestDriveBookingDocument),
+      _id: String(d._id),
+      preferredDate: new Date(d.preferredDate as string | Date),
+      createdAt: d.createdAt ? new Date(d.createdAt as string | Date) : new Date(),
+      updatedAt: d.updatedAt ? new Date(d.updatedAt as string | Date) : new Date(),
+    }));
   } catch {
     let list = global.__testDrivesStore || [];
     if (status && status !== 'all') {
@@ -202,4 +204,69 @@ export async function getTestDriveBookings(status?: string): Promise<ITestDriveB
     }
     return list;
   }
+}
+
+/**
+ * Update test drive status in MongoDB (Pending, Confirmed, Cancelled, Completed)
+ */
+export async function updateTestDriveStatus(
+  id: string,
+  status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed'
+): Promise<ITestDriveBookingDocument | null> {
+  await connectToDatabase();
+  try {
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      const updated = await TestDriveBooking.findByIdAndUpdate(
+        id,
+        { $set: { status, updatedAt: new Date() } },
+        { new: true, lean: true }
+      );
+      if (updated) {
+        const u = updated as unknown as Record<string, unknown>;
+        return {
+          ...(u as unknown as ITestDriveBookingDocument),
+          _id: String(u._id),
+          preferredDate: new Date(u.preferredDate as string | Date),
+        };
+      }
+    }
+  } catch (err) {
+    console.warn('[Aureus Motors] updateTestDriveStatus MongoDB error:', err);
+  }
+
+  if (global.__testDrivesStore) {
+    const item = global.__testDrivesStore.find((b) => b._id === id);
+    if (item) {
+      item.status = status;
+      item.updatedAt = new Date();
+      return item;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Delete a test drive booking document
+ */
+export async function deleteTestDriveBooking(id: string): Promise<boolean> {
+  await connectToDatabase();
+  try {
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      const res = await TestDriveBooking.findByIdAndDelete(id);
+      if (res) return true;
+    }
+  } catch (err) {
+    console.warn('[Aureus Motors] deleteTestDriveBooking MongoDB error:', err);
+  }
+
+  if (global.__testDrivesStore) {
+    const idx = global.__testDrivesStore.findIndex((b) => b._id === id);
+    if (idx !== -1) {
+      global.__testDrivesStore.splice(idx, 1);
+      return true;
+    }
+  }
+
+  return false;
 }

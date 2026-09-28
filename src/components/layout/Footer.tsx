@@ -56,6 +56,7 @@ export const Footer: React.FC = () => {
             <a href="#">Privacy Policy</a>
             <a href="#">Audit Protocols</a>
             <a href="#">Terms of Concierge</a>
+            <Link href="/admin/login" style={{ color: 'var(--color-primary-400)', fontWeight: 500 }}>Dealer Portal</Link>
           </div>
         </div>
       </div>

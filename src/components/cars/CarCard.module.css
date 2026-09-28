@@ -115,6 +115,12 @@
   border: 1px solid rgba(255, 193, 7, 0.4);
 }
 
+.statusSold {
+  background: rgba(180, 83, 9, 0.85);
+  color: #FEF3C7;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
 .media360Pill {
   position: absolute;
   bottom: 12px;

@@ -18,22 +18,27 @@ export default function SellYourCarPage() {
   // Multi-step form state
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
-  const [year, setYear] = useState('2022');
+  const [year, setYear] = useState('2023');
   const [fuel, setFuel] = useState('Petrol');
   const [transmission, setTransmission] = useState('Automatic');
   const [km, setKm] = useState('');
   const [ownership, setOwnership] = useState('1st Owner');
   const [rtoCity, setRtoCity] = useState('');
+  const [expectedPrice, setExpectedPrice] = useState('');
   const [sellerName, setSellerName] = useState('');
   const [sellerPhone, setSellerPhone] = useState('');
+  const [sellerEmail, setSellerEmail] = useState('');
+  const [message, setMessage] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   // FAQ open/close state
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const calculateEstimate = () => {
-    // Demo algorithmic valuation based on year & brand
+    // Algorithmic valuation estimate based on year & brand
     let base = 16.5;
     if (quickBrand === 'Mahindra') base = 21.0;
     if (quickBrand === 'Hyundai') base = 16.8;
@@ -51,9 +56,83 @@ export default function SellYourCarPage() {
     setUploadedFiles(['exterior_front.jpg', 'interior_odometer.jpg', 'rc_document.pdf']);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    setErrorMessage(null);
+
+    // Client-side quick checks
+    if (!sellerName.trim() || sellerName.trim().length < 2) {
+      setErrorMessage('Please enter your full name (minimum 2 characters)');
+      return;
+    }
+
+    const cleanPhone = sellerPhone.replace(/[^0-9]/g, '');
+    if (cleanPhone.length < 10) {
+      setErrorMessage('Please enter a valid 10-digit mobile phone number');
+      return;
+    }
+
+    if (!sellerEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sellerEmail.trim())) {
+      setErrorMessage('Please enter a valid email address');
+      return;
+    }
+
+    if (!brand.trim()) {
+      setErrorMessage('Please specify the manufacturer / brand');
+      return;
+    }
+
+    if (!model.trim()) {
+      setErrorMessage('Please specify the vehicle model and variant');
+      return;
+    }
+
+    const numericKm = parseInt(km, 10);
+    if (isNaN(numericKm) || numericKm < 0) {
+      setErrorMessage('Please provide a valid odometer reading in kilometers');
+      return;
+    }
+
+    if (!rtoCity.trim()) {
+      setErrorMessage('Please enter the RTO registration state or city');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const payload = {
+        ownerName: sellerName.trim(),
+        phone: sellerPhone.trim(),
+        email: sellerEmail.trim().toLowerCase(),
+        carBrand: brand.trim(),
+        carModel: model.trim(),
+        carYear: parseInt(year, 10),
+        kilometers: numericKm,
+        fuelType: fuel,
+        transmission,
+        expectedPrice: expectedPrice.trim() ? parseFloat(expectedPrice.trim()) : null,
+        location: rtoCity.trim(),
+        message: message.trim() || undefined,
+      };
+
+      const res = await fetch('/api/sell-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || 'Failed to submit vehicle valuation request');
+      }
+
+      setIsSubmitted(true);
+    } catch (err: any) {
+      setErrorMessage(err.message || 'An error occurred during submission. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const faqs = [
@@ -239,6 +318,31 @@ export default function SellYourCarPage() {
                 </p>
               </div>
 
+              {/* Error Message Banner */}
+              {errorMessage && (
+                <div
+                  style={{
+                    background: 'rgba(220, 53, 69, 0.08)',
+                    border: '1px solid rgba(220, 53, 69, 0.3)',
+                    color: '#DC3545',
+                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    fontSize: '0.88rem',
+                    marginBottom: '1.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
               {!isSubmitted ? (
                 <form onSubmit={handleSubmit}>
                   <div className={styles.formRow}>
@@ -251,6 +355,7 @@ export default function SellYourCarPage() {
                         value={brand}
                         onChange={(e) => setBrand(e.target.value)}
                         className={styles.formInput}
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -263,6 +368,7 @@ export default function SellYourCarPage() {
                         value={model}
                         onChange={(e) => setModel(e.target.value)}
                         className={styles.formInput}
+                        disabled={isSubmitting}
                       />
                     </div>
                   </div>
@@ -270,13 +376,23 @@ export default function SellYourCarPage() {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label className={styles.formLabel}>Year of Registration *</label>
-                      <select value={year} onChange={(e) => setYear(e.target.value)} className={styles.formSelect}>
+                      <select
+                        value={year}
+                        onChange={(e) => setYear(e.target.value)}
+                        className={styles.formSelect}
+                        disabled={isSubmitting}
+                      >
+                        <option value="2025">2025</option>
                         <option value="2024">2024</option>
                         <option value="2023">2023</option>
                         <option value="2022">2022</option>
                         <option value="2021">2021</option>
                         <option value="2020">2020</option>
                         <option value="2019">2019</option>
+                        <option value="2018">2018</option>
+                        <option value="2017">2017</option>
+                        <option value="2016">2016</option>
+                        <option value="2015">2015</option>
                       </select>
                     </div>
 
@@ -289,6 +405,7 @@ export default function SellYourCarPage() {
                         value={km}
                         onChange={(e) => setKm(e.target.value)}
                         className={styles.formInput}
+                        disabled={isSubmitting}
                       />
                     </div>
                   </div>
@@ -296,11 +413,17 @@ export default function SellYourCarPage() {
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label className={styles.formLabel}>Fuel Type *</label>
-                      <select value={fuel} onChange={(e) => setFuel(e.target.value)} className={styles.formSelect}>
+                      <select
+                        value={fuel}
+                        onChange={(e) => setFuel(e.target.value)}
+                        className={styles.formSelect}
+                        disabled={isSubmitting}
+                      >
                         <option value="Petrol">Petrol</option>
                         <option value="Diesel">Diesel</option>
                         <option value="Hybrid">Strong Hybrid</option>
                         <option value="Electric">Electric (EV)</option>
+                        <option value="CNG">CNG</option>
                       </select>
                     </div>
 
@@ -310,8 +433,9 @@ export default function SellYourCarPage() {
                         value={transmission}
                         onChange={(e) => setTransmission(e.target.value)}
                         className={styles.formSelect}
+                        disabled={isSubmitting}
                       >
-                        <option value="Automatic">Automatic (AT / DCT / CVT)</option>
+                        <option value="Automatic">Automatic (AT / DCT / CVT / e-CVT)</option>
                         <option value="Manual">Manual</option>
                       </select>
                     </div>
@@ -324,10 +448,12 @@ export default function SellYourCarPage() {
                         value={ownership}
                         onChange={(e) => setOwnership(e.target.value)}
                         className={styles.formSelect}
+                        disabled={isSubmitting}
                       >
                         <option value="1st Owner">1st Owner (Individual)</option>
                         <option value="1st Owner (Company)">1st Owner (Company Registered)</option>
                         <option value="2nd Owner">2nd Owner</option>
+                        <option value="3rd Owner+">3rd Owner+</option>
                       </select>
                     </div>
 
@@ -336,36 +462,49 @@ export default function SellYourCarPage() {
                       <input
                         type="text"
                         required
-                        placeholder="e.g. MH-02 (Mumbai West), KA-01 (Bengaluru)"
+                        placeholder="e.g. MH-02 (Mumbai West), KA-01 (Bengaluru), DL-03"
                         value={rtoCity}
                         onChange={(e) => setRtoCity(e.target.value)}
                         className={styles.formInput}
+                        disabled={isSubmitting}
                       />
                     </div>
                   </div>
 
-                  {/* Photo Upload Dropzone */}
-                  <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Vehicle Images & Documents (Optional)</label>
-                    <div className={styles.dropzone} onClick={handleFakeFileUpload}>
-                      <div className={styles.dropzoneIcon}>
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                          <circle cx="8.5" cy="8.5" r="1.5" />
-                          <polyline points="21 15 16 10 5 21" />
-                        </svg>
+                  {/* Expected Price & Additional Information */}
+                  <div className={styles.formRow}>
+                    <div className={styles.formGroup}>
+                      <label className={styles.formLabel}>Expected Price (₹ in Lakhs or INR, Optional)</label>
+                      <input
+                        type="number"
+                        placeholder="e.g. 1850000"
+                        value={expectedPrice}
+                        onChange={(e) => setExpectedPrice(e.target.value)}
+                        className={styles.formInput}
+                        disabled={isSubmitting}
+                      />
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label className={styles.formLabel}>Vehicle Images / Documents (Optional)</label>
+                      <div className={styles.dropzone} onClick={handleFakeFileUpload}>
+                        <div className={styles.dropzoneIcon}>
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" />
+                            <polyline points="21 15 16 10 5 21" />
+                          </svg>
+                        </div>
+                        <span className={styles.dropzoneText}>
+                          {uploadedFiles.length > 0
+                            ? `${uploadedFiles.length} files attached (${uploadedFiles.join(', ')})`
+                            : 'Click to attach photos or RC copy'}
+                        </span>
                       </div>
-                      <span className={styles.dropzoneText}>
-                        {uploadedFiles.length > 0
-                          ? `${uploadedFiles.length} files attached (${uploadedFiles.join(', ')})`
-                          : 'Click to attach vehicle photos or RC copy'}
-                      </span>
-                      <span className={styles.dropzoneSubtext}>
-                        High resolution exterior, interior, or odometer photos expedite binding offers.
-                      </span>
                     </div>
                   </div>
 
+                  {/* Contact Information */}
                   <div className={styles.formRow}>
                     <div className={styles.formGroup}>
                       <label className={styles.formLabel}>Your Full Name *</label>
@@ -376,6 +515,7 @@ export default function SellYourCarPage() {
                         value={sellerName}
                         onChange={(e) => setSellerName(e.target.value)}
                         className={styles.formInput}
+                        disabled={isSubmitting}
                       />
                     </div>
 
@@ -388,19 +528,51 @@ export default function SellYourCarPage() {
                         value={sellerPhone}
                         onChange={(e) => setSellerPhone(e.target.value)}
                         className={styles.formInput}
+                        disabled={isSubmitting}
                       />
                     </div>
                   </div>
 
-                  <button type="submit" className={styles.submitBtn}>
-                    <span>Request Guaranteed Valuation & Doorstep Inspection</span>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Email Address *</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="aditya@domain.com"
+                      value={sellerEmail}
+                      onChange={(e) => setSellerEmail(e.target.value)}
+                      className={styles.formInput}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Additional Notes or Inspection Preferences (Optional)</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Mention service records, insurance validity, modifications, or preferred doorstep inspection timing..."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      className={styles.formInput}
+                      style={{ resize: 'none' }}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className={styles.submitBtn}
+                    disabled={isSubmitting}
+                    style={{ opacity: isSubmitting ? 0.75 : 1 }}
+                  >
+                    <span>{isSubmitting ? 'Transmitting Request...' : 'Request Valuation & Doorstep Inspection'}</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                   </button>
                 </form>
               ) : (
-                <div style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
+                <div style={{ textAlign: 'center', padding: '3.5rem 1.5rem' }}>
                   <div
                     style={{
                       width: '68px',
@@ -418,22 +590,34 @@ export default function SellYourCarPage() {
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
                   </div>
-                  <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-                    Valuation Dossier Received
+                  <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.85rem', fontWeight: 700, marginBottom: '0.6rem' }}>
+                    Request Received
                   </h3>
-                  <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', maxWidth: '480px', margin: '0 auto 2rem', lineHeight: '1.6' }}>
-                    Thank you, <strong>{sellerName}</strong>. Your {year} {brand} {model} has been queued for institutional appraisal. Our senior acquisition lead will contact you at <strong>{sellerPhone}</strong> to confirm your doorstep inspection slot.
+                  <p style={{ color: '#c8a97e', fontSize: '1.05rem', fontWeight: 600, marginBottom: '1rem' }}>
+                    Our team will review your details and contact you.
+                  </p>
+                  <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.92rem', maxWidth: '480px', margin: '0 auto 2rem', lineHeight: '1.6' }}>
+                    Thank you, <strong>{sellerName}</strong>. Your valuation request for the <strong>{year} {brand} {model}</strong> has been logged in our institutional acquisition queue. Our senior acquisition lead will reach out to you at <strong>{sellerPhone}</strong> to schedule a complimentary doorstep inspection.
                   </p>
                   <button
-                    onClick={() => setIsSubmitted(false)}
+                    onClick={() => {
+                      setIsSubmitted(false);
+                      setBrand('');
+                      setModel('');
+                      setKm('');
+                      setRtoCity('');
+                      setExpectedPrice('');
+                      setMessage('');
+                    }}
                     style={{
-                      padding: '10px 24px',
+                      padding: '12px 28px',
                       background: '#1A1A1A',
                       color: '#FFFFFF',
                       borderRadius: '8px',
-                      border: 'none',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
                       fontWeight: 600,
                       cursor: 'pointer',
+                      transition: 'background 0.2s ease',
                     }}
                   >
                     Submit Another Vehicle

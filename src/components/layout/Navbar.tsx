@@ -78,6 +78,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTestDrive }) => {
             <span>Studio Open · Mumbai</span>
           </div>
 
+          <Link
+            href="/admin/login"
+            className={styles.adminLoginBtn}
+            id="nav-admin-login-btn"
+            title="Dealership Executive Admin Login"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span>Admin Login</span>
+          </Link>
+
           <div className={styles.desktopCta}>
             <Button
               variant="primary"
@@ -133,6 +146,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTestDrive }) => {
           >
             Book a Test Drive
           </Button>
+          <Link href="/admin/login" className={styles.mobileAdminLink} onClick={handleLinkClick}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span>Dealership Admin Login</span>
+          </Link>
           <div>
             <p className={styles.mobileContactText}>Client Advisory Concierge</p>
             <a href="tel:+919820028738" className={styles.mobileContactNumber}>

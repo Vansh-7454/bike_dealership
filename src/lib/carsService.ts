@@ -1,5 +1,5 @@
 import connectToDatabase from './mongodb';
-import Car, { ICarDocument } from '@/models/Car';
+import Car, { ICarDocument, ICarItem, FuelType, TransmissionType, BodyType, VehicleStatus } from '@/models/Car';
 import { DEMO_CARS } from './seedData';
 
 export interface CarFilterOptions {
@@ -65,7 +65,7 @@ export async function getCars(options: CarFilterOptions = {}): Promise<Paginated
     maxYear,
     sort = 'newest',
     featured,
-    status = 'Available',
+    status,
     limit = 12,
     page = 1,
   } = options;
@@ -88,6 +88,8 @@ export async function getCars(options: CarFilterOptions = {}): Promise<Paginated
 
     if (status && status !== 'all') {
       query.status = status;
+    } else if (status !== 'all') {
+      query.status = { $ne: 'Archived' };
     }
 
     if (featured !== undefined) {
@@ -196,6 +198,8 @@ export async function getCars(options: CarFilterOptions = {}): Promise<Paginated
 
   if (status && status !== 'all') {
     filtered = filtered.filter((c) => c.status === status);
+  } else if (status !== 'all') {
+    filtered = filtered.filter((c) => c.status !== 'Archived');
   }
 
   if (featured !== undefined) {
@@ -322,18 +326,18 @@ export async function getCarByIdOrSlug(idOrSlug: string): Promise<ICarDocument |
     }
 
     if (car) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const formatted: any = {
-        ...car,
-        _id: (car as any)._id.toString(),
-        createdAt: (car as any).createdAt
-          ? new Date((car as any).createdAt).toISOString()
-          : new Date().toISOString(),
-        updatedAt: (car as any).updatedAt
-          ? new Date((car as any).updatedAt).toISOString()
-          : new Date().toISOString(),
+      const doc = car as unknown as Record<string, unknown>;
+      const formatted: ICarDocument = {
+        ...(doc as unknown as ICarDocument),
+        _id: String(doc._id),
+        createdAt: doc.createdAt
+          ? new Date(doc.createdAt as string | Date)
+          : new Date(),
+        updatedAt: doc.updatedAt
+          ? new Date(doc.updatedAt as string | Date)
+          : new Date(),
       };
-      return formatted as ICarDocument;
+      return formatted;
     }
   } catch (err) {
     console.warn('[Aureus Motors] Database lookup error, checking fallback store:', err);
@@ -349,13 +353,13 @@ export async function getCarByIdOrSlug(idOrSlug: string): Promise<ICarDocument |
   );
 
   if (found) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {
-      ...found,
+    const fallbackCar: ICarDocument = {
+      ...(found as unknown as ICarDocument),
       _id: idOrSlug,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    } as any;
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    return fallbackCar;
   }
 
   return null;
@@ -371,4 +375,171 @@ export async function getFeaturedCars(limit: number = 4): Promise<ICarDocument[]
     return fallback.cars;
   }
   return result.cars;
+}
+
+/**
+ * Generate a unique URL slug for a vehicle
+ */
+export function generateCarSlug(brand: string, model: string, year: number, variant?: string): string {
+  const base = `${year}-${brand}-${model}${variant ? `-${variant}` : ''}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
+  return `${base}-${Math.random().toString(36).substring(2, 6)}`;
+}
+
+/**
+ * Create a new vehicle listing in MongoDB
+ */
+export async function createCar(carData: Partial<ICarItem> & Record<string, unknown>): Promise<ICarDocument> {
+  await connectToDatabase();
+  await seedCarsIfEmpty();
+
+  const brand = (carData.brand as string)?.trim() || 'Aureus';
+  const model = (carData.model as string)?.trim() || 'Model';
+  const year = Number(carData.year) || new Date().getFullYear();
+  const variant = (carData.variant as string)?.trim() || '';
+  const title = (carData.title as string)?.trim() || `${brand} ${model} ${variant}`.trim();
+  const slug = (carData.slug as string)?.trim() || generateCarSlug(brand, model, year, variant);
+
+  const docToInsert = {
+    title,
+    slug,
+    brand,
+    model,
+    variant,
+    year,
+    price: Number(carData.price) || 0,
+    fuelType: (carData.fuelType as FuelType) || 'Petrol',
+    transmission: (carData.transmission as TransmissionType) || 'Automatic',
+    kilometers: Number(carData.kilometers) || 0,
+    bodyType: (carData.bodyType as BodyType) || 'SUV',
+    color: (carData.color as string)?.trim() || 'Black',
+    ownership: (carData.ownership as string)?.trim() || '1st Owner',
+    location: (carData.location as string)?.trim() || 'Mumbai Studio',
+    description: (carData.description as string)?.trim() || '',
+    features: Array.isArray(carData.features)
+      ? (carData.features as string[])
+      : typeof carData.features === 'string'
+      ? (carData.features as string).split(',').map((f: string) => f.trim()).filter(Boolean)
+      : [],
+    images: Array.isArray(carData.images) && (carData.images as string[]).length > 0
+      ? (carData.images as string[])
+      : ['/images/inventory/xuv700_hero.jpg'],
+    featured: Boolean(carData.featured),
+    status: (carData.status as VehicleStatus) || 'Available',
+    inspectionScore: Number(carData.inspectionScore) || 160,
+    registrationState: (carData.registrationState as string)?.trim() || 'MH',
+  };
+
+  try {
+    const created = await Car.create(docToInsert);
+    const obj = created.toObject() as unknown as Record<string, unknown>;
+    return {
+      ...(obj as unknown as ICarDocument),
+      _id: String(obj._id),
+      createdAt: obj.createdAt ? new Date(obj.createdAt as string | Date) : new Date(),
+      updatedAt: obj.updatedAt ? new Date(obj.updatedAt as string | Date) : new Date(),
+    };
+  } catch {
+    // If running in pure offline fallback
+    const fallbackId = `car-${Date.now()}`;
+    const fallbackCar: ICarDocument = {
+      ...(docToInsert as unknown as ICarDocument),
+      _id: fallbackId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    DEMO_CARS.unshift(fallbackCar as unknown as typeof DEMO_CARS[0]);
+    return fallbackCar;
+  }
+}
+
+/**
+ * Update an existing vehicle in MongoDB
+ */
+export async function updateCar(id: string, carData: Partial<ICarItem> & Record<string, unknown>): Promise<ICarDocument | null> {
+  await connectToDatabase();
+  await seedCarsIfEmpty();
+
+  const updateFields: Record<string, unknown> = { ...carData };
+  delete updateFields._id;
+  delete updateFields.id;
+
+  if (updateFields.price) updateFields.price = Number(updateFields.price);
+  if (updateFields.year) updateFields.year = Number(updateFields.year);
+  if (updateFields.kilometers) updateFields.kilometers = Number(updateFields.kilometers);
+  if (typeof updateFields.features === 'string') {
+    updateFields.features = (updateFields.features as string).split(',').map((f: string) => f.trim()).filter(Boolean);
+  }
+
+  try {
+    let updated = null;
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      updated = await Car.findByIdAndUpdate(id, { $set: updateFields }, { new: true, lean: true });
+    }
+    if (!updated) {
+      updated = await Car.findOneAndUpdate({ slug: id }, { $set: updateFields }, { new: true, lean: true });
+    }
+
+    if (updated) {
+      const u = updated as unknown as Record<string, unknown>;
+      return {
+        ...(u as unknown as ICarDocument),
+        _id: String(u._id),
+        createdAt: u.createdAt ? new Date(u.createdAt as string | Date) : new Date(),
+        updatedAt: u.updatedAt ? new Date(u.updatedAt as string | Date) : new Date(),
+      };
+    }
+  } catch (err) {
+    console.warn('[Aureus Motors] updateCar MongoDB error:', err);
+  }
+
+  // Fallback memory update
+  const idx = DEMO_CARS.findIndex((c, i) => c.slug === id || `demo-${i + 1}` === id);
+  if (idx !== -1) {
+    const existing = DEMO_CARS[idx];
+    const merged = { ...existing, ...updateFields, updatedAt: new Date() };
+    DEMO_CARS[idx] = merged as unknown as typeof DEMO_CARS[0];
+    return { ...(merged as unknown as ICarDocument), _id: id };
+  }
+
+  return null;
+}
+
+/**
+ * Change vehicle status (e.g. Available <-> Sold or Archived)
+ */
+export async function updateCarStatus(id: string, status: VehicleStatus | string): Promise<ICarDocument | null> {
+  return updateCar(id, { status: status as VehicleStatus });
+}
+
+/**
+ * Archive a vehicle (safe soft-removal preserving relationship integrity)
+ */
+export async function archiveCar(id: string): Promise<boolean> {
+  const result = await updateCar(id, { status: 'Archived' });
+  return !!result;
+}
+
+/**
+ * Delete a vehicle permanently
+ */
+export async function deleteCar(id: string): Promise<boolean> {
+  await connectToDatabase();
+  try {
+    if (/^[0-9a-fA-F]{24}$/.test(id)) {
+      const res = await Car.findByIdAndDelete(id);
+      if (res) return true;
+    }
+    const res = await Car.findOneAndDelete({ slug: id });
+    return !!res;
+  } catch {
+    const idx = DEMO_CARS.findIndex((c, i) => c.slug === id || `demo-${i + 1}` === id);
+    if (idx !== -1) {
+      DEMO_CARS.splice(idx, 1);
+      return true;
+    }
+    return false;
+  }
 }
