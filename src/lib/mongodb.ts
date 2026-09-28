@@ -26,13 +26,20 @@ if (!global.mongooseCache) {
  */
 export async function connectToDatabase(): Promise<typeof mongoose> {
   if (cached.conn && mongoose.connection.readyState === 1) {
-    return cached.conn;
+    if (mongoose.connection.db?.databaseName === 'used_bikes') {
+      return cached.conn;
+    }
+    // If connected to a different database, reset and reconnect to used_bikes
+    await mongoose.disconnect();
+    cached.conn = null;
+    cached.promise = null;
   }
 
   if (!cached.promise) {
     const opts: mongoose.ConnectOptions = {
       bufferCommands: false,
       serverSelectionTimeoutMS: 2500,
+      dbName: 'used_bikes',
     };
 
     cached.promise = (async () => {
@@ -52,18 +59,21 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
         if (!cached.mmsInstance) {
           cached.mmsInstance = await MongoMemoryServer.create({
             instance: {
-              dbName: 'aureus_motors',
+              dbName: 'used_bikes',
             },
           });
         }
-        const uri = cached.mmsInstance.getUri();
+        const baseUri = cached.mmsInstance.getUri();
+        const cleanUri = baseUri.replace(/\/+$/, '');
+        const uri = cleanUri.endsWith('/used_bikes') ? cleanUri : `${cleanUri}/used_bikes`;
         const mmsConn = await mongoose.connect(uri, {
           bufferCommands: false,
+          dbName: 'used_bikes',
         });
         return mmsConn;
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : String(err);
-        console.error('[Aureus Motors] MongoDB connection error:', message);
+        console.error('[Torque Two-Wheelers] MongoDB connection error:', message);
         throw err;
       }
     })();

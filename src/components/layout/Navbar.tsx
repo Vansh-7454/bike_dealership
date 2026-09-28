@@ -6,10 +6,10 @@ import styles from './Navbar.module.css';
 import { Button } from '@/components/common/Button';
 
 interface NavbarProps {
-  onOpenTestDrive?: () => void;
+  onOpenTestRide?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenTestDrive }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenTestRide }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -33,10 +33,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTestDrive }) => {
 
   const navItems = [
     { label: 'Home', href: '/' },
-    { label: 'Cars', href: '/cars' },
-    { label: 'Sell Your Car', href: '/sell-your-car' },
-    { label: 'About', href: '/about' },
+    { label: 'Bikes', href: '/bikes' },
+    { label: 'Sell Bike', href: '/sell-your-bike' },
     { label: 'Experience', href: '/experience' },
+    { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
   ];
 
@@ -50,11 +50,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTestDrive }) => {
         {/* Brand Wordmark & Monogram */}
         <Link href="/" className={styles.brand} onClick={handleLinkClick}>
           <div className={styles.brandMonogram}>
-            <span className={styles.monogramLetter}>A</span>
+            <span className={styles.monogramLetter}>T</span>
           </div>
           <div className={styles.brandText}>
-            <span className={styles.brandName}>AUREUS</span>
-            <span className={styles.brandTag}>MOTORS · PRE-OWNED</span>
+            <span className={styles.brandName}>TORQUE</span>
+            <span className={styles.brandTag}>TWO-WHEELERS · PRE-OWNED</span>
           </div>
         </Link>
 
@@ -73,36 +73,36 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTestDrive }) => {
 
         {/* Right Section */}
         <div className={styles.navRight}>
-          <div className={styles.locationBadge} title="Mumbai Flagship Studio Active">
+          <div className={styles.locationBadge} title="Torque Indiranagar Flagship Studio Open">
             <span className={styles.statusDot}></span>
-            <span>Studio Open · Mumbai</span>
+            <span>Indiranagar Studio Open</span>
           </div>
 
           <Link
             href="/admin/login"
             className={styles.adminLoginBtn}
             id="nav-admin-login-btn"
-            title="Dealership Executive Admin Login"
+            title="Dealership Admin Portal"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
-            <span>Admin Login</span>
+            <span>Admin</span>
           </Link>
 
           <div className={styles.desktopCta}>
             <Button
               variant="primary"
               size="sm"
-              onClick={onOpenTestDrive}
+              onClick={onOpenTestRide}
               icon={
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               }
             >
-              Book Test Drive
+              Book Test Ride
             </Button>
           </div>
 
@@ -141,10 +141,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTestDrive }) => {
             className="w-full"
             onClick={() => {
               setMobileMenuOpen(false);
-              onOpenTestDrive?.();
+              onOpenTestRide?.();
             }}
           >
-            Book a Test Drive
+            Book a Test Ride
           </Button>
           <Link href="/admin/login" className={styles.mobileAdminLink} onClick={handleLinkClick}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -154,9 +154,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTestDrive }) => {
             <span>Dealership Admin Login</span>
           </Link>
           <div>
-            <p className={styles.mobileContactText}>Client Advisory Concierge</p>
-            <a href="tel:+919820028738" className={styles.mobileContactNumber}>
-              +91 98200 AUREUS (28738)
+            <p className={styles.mobileContactText}>Rider Concierge Line</p>
+            <a href="tel:+919820086778" className={styles.mobileContactNumber}>
+              +91 98200 TORQUE (86778)
             </a>
           </div>
         </div>
@@ -164,3 +164,5 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenTestDrive }) => {
     </header>
   );
 };
+
+export default Navbar;

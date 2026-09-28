@@ -1,42 +1,81 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
-import { HeroShowroom } from '@/components/hero/HeroShowroom';
+import { EditorialBikeHero } from '@/components/hero/EditorialBikeHero';
 import { ValuePillars } from '@/components/showcase/ValuePillars';
-import { FeaturedCarSpotlight } from '@/components/showcase/FeaturedCarSpotlight';
-import { CollectionPreview } from '@/components/showcase/CollectionPreview';
-import { CarDetailModal } from '@/components/showcase/CarDetailModal';
-import { TestDriveModal } from '@/components/common/TestDriveModal';
+import { FeaturedBikeSpotlight } from '@/components/showcase/FeaturedBikeSpotlight';
+import { BikeCollectionPreview } from '@/components/showcase/BikeCollectionPreview';
+import { BikeDetailModal } from '@/components/showcase/BikeDetailModal';
+import { TestRideModal } from '@/components/common/TestRideModal';
 import { BrandStoryTestimonials } from '@/components/showcase/BrandStoryTestimonials';
 import { Footer } from '@/components/layout/Footer';
-import { ICar } from '@/types';
-import { HERO_SHOWCASE_CAR } from '@/data/showcaseCar';
+import { IBike } from '@/types';
+import { HERO_SHOWCASE_BIKE } from '@/data/showcaseBike';
 
 export default function HomePage() {
-  const [isTestDriveOpen, setIsTestDriveOpen] = useState(false);
+  const [heroBike, setHeroBike] = useState<any>(HERO_SHOWCASE_BIKE);
+  const [isTestRideOpen, setIsTestRideOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [selectedTestDriveCar, setSelectedTestDriveCar] = useState<any>(HERO_SHOWCASE_CAR);
+  const [selectedTestRideBike, setSelectedTestRideBike] = useState<any>(HERO_SHOWCASE_BIKE);
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [selectedDetailCar, setSelectedDetailCar] = useState<ICar | null>(null);
+  const [selectedDetailBike, setSelectedDetailBike] = useState<IBike | null>(null);
+
+  // Fetch real motorcycle record from active MongoDB database on load
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/api/bikes')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!isMounted || !data?.bikes || data.bikes.length === 0) return;
+        // Prioritize Royal Enfield Classic 350 or featured available bike
+        const classic = data.bikes.find(
+          (b: any) =>
+            b.model?.toLowerCase().includes('classic 350') &&
+            b.status === 'Available'
+        );
+        const featured =
+          classic ||
+          data.bikes.find((b: any) => b.featured && b.status === 'Available') ||
+          data.bikes[0];
+
+        if (featured) {
+          const resolvedBike = {
+            ...featured,
+            id: featured._id || featured.id,
+            images: [
+              '/images/bikes/classic_350_isolated.png',
+              ...(featured.images || []),
+            ],
+          };
+          setHeroBike(resolvedBike);
+          setSelectedTestRideBike(resolvedBike);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleOpenTestDrive = (car?: any) => {
-    if (car) {
-      setSelectedTestDriveCar(car);
+  const handleOpenTestRide = (bike?: any) => {
+    if (bike) {
+      setSelectedTestRideBike(bike);
     } else {
-      setSelectedTestDriveCar(HERO_SHOWCASE_CAR);
+      setSelectedTestRideBike(heroBike || HERO_SHOWCASE_BIKE);
     }
-    setIsTestDriveOpen(true);
+    setIsTestRideOpen(true);
   };
 
-  const handleCloseTestDrive = () => {
-    setIsTestDriveOpen(false);
+  const handleCloseTestRide = () => {
+    setIsTestRideOpen(false);
   };
 
-  const handleOpenDetail = (car: ICar) => {
-    setSelectedDetailCar(car);
+  const handleOpenDetail = (bike: IBike) => {
+    setSelectedDetailBike(bike);
     setIsDetailModalOpen(true);
   };
 
@@ -44,57 +83,53 @@ export default function HomePage() {
     setIsDetailModalOpen(false);
   };
 
-  const handleBookFromDetail = (car: ICar) => {
+  const handleBookFromDetail = (bike: IBike) => {
     setIsDetailModalOpen(false);
-    handleOpenTestDrive(car);
+    handleOpenTestRide(bike);
   };
 
   return (
     <main className="min-h-screen">
       {/* Global Navbar */}
-      <Navbar onOpenTestDrive={() => handleOpenTestDrive(HERO_SHOWCASE_CAR)} />
+      <Navbar onOpenTestRide={() => handleOpenTestRide(heroBike)} />
 
-      {/* Hero Showroom Theater: Closed velvet curtains + "Meet Your Next Car" reveal + 360 Turntable */}
-      <HeroShowroom
-        car={HERO_SHOWCASE_CAR}
-        onBookTestDrive={(car) => handleOpenTestDrive(car)}
+      {/* Editorial Motorcycle Hero */}
+      <EditorialBikeHero
+        bike={heroBike}
+        onBookTestRide={(bike) => handleOpenTestRide(bike || heroBike)}
       />
 
-      {/* 160-Point Audit Standards & Trust Foundation */}
+      {/* 120-Point Motorcycle Certification & Trust Standards */}
       <ValuePillars />
 
-      {/* Immersive Featured Car Editorial Spotlight */}
-      <FeaturedCarSpotlight
-        car={HERO_SHOWCASE_CAR}
-        onInspect={handleOpenDetail}
-        onBookTestDrive={(car) => handleOpenTestDrive(car)}
+      {/* Immersive Featured Motorcycle Spotlight */}
+      <FeaturedBikeSpotlight
+        bike={heroBike}
+        onBookTestRide={(bike) => handleOpenTestRide(bike || heroBike)}
       />
 
-      {/* Curated Collection with Varied Asymmetrical Rhythm & Distinct Car Photography */}
-      <CollectionPreview
-        onViewDetails={handleOpenDetail}
-        onBookTestDrive={(car) => handleOpenTestDrive(car)}
-      />
+      {/* Curated Collection with Indian Market Bikes */}
+      <BikeCollectionPreview />
 
-      {/* Editorial Patron Endorsements & Final Invitation */}
+      {/* Rider Patron Endorsements & Sell Invitation */}
       <BrandStoryTestimonials />
 
       {/* Global Footer */}
       <Footer />
 
-      {/* Interactive 160-Point Audit & Vehicle Detail Presentation Modal */}
-      <CarDetailModal
-        car={selectedDetailCar}
+      {/* Interactive Motorcycle Detail Presentation Modal */}
+      <BikeDetailModal
+        bike={selectedDetailBike}
         isOpen={isDetailModalOpen}
         onClose={handleCloseDetail}
-        onBookTestDrive={handleBookFromDetail}
+        onBookTestRide={handleBookFromDetail}
       />
 
-      {/* Interactive Test-Drive Modal */}
-      <TestDriveModal
-        isOpen={isTestDriveOpen}
-        onClose={handleCloseTestDrive}
-        car={selectedTestDriveCar}
+      {/* Interactive Test-Ride Modal */}
+      <TestRideModal
+        isOpen={isTestRideOpen}
+        onClose={handleCloseTestRide}
+        bike={selectedTestRideBike}
       />
     </main>
   );

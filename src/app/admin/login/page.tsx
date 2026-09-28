@@ -50,9 +50,9 @@ export default function AdminLoginPage() {
     <div className={styles.loginContainer}>
       <div className={styles.loginCard}>
         <div className={styles.brandHeader}>
-          <div className={styles.brandEmblem}>A</div>
-          <h1 className={styles.brandTitle}>AUREUS MOTORS</h1>
-          <span className={styles.brandSubtitle}>Executive Dealership Portal</span>
+          <div className={styles.brandEmblem} style={{ background: '#C86D3B' }}>T</div>
+          <h1 className={styles.brandTitle}>TORQUE TWO-WHEELERS</h1>
+          <span className={styles.brandSubtitle}>Motorcycle Dealership Portal</span>
         </div>
 
         {error && (
@@ -77,7 +77,7 @@ export default function AdminLoginPage() {
                 type="email"
                 required
                 autoComplete="email"
-                placeholder="admin@aureusmotors.in"
+                placeholder="admin@torquemoto.in"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.input}
@@ -146,24 +146,24 @@ export default function AdminLoginPage() {
               type="button"
               className={styles.demoFillBtn}
               onClick={() => {
-                setEmail('admin@aureusmotors.in');
-                setPassword('AureusAdmin2026!');
+                setEmail('admin@torquemoto.in');
+                setPassword('TorqueAdmin2026!');
               }}
             >
               Fill Credentials
             </button>
           </div>
           <div className={styles.demoDetails}>
-            <div><strong>Email:</strong> admin@aureusmotors.in</div>
-            <div><strong>Password:</strong> AureusAdmin2026!</div>
+            <div><strong>Email:</strong> admin@torquemoto.in</div>
+            <div><strong>Password:</strong> TorqueAdmin2026!</div>
           </div>
         </div>
 
         <div className={styles.footerNote}>
-          <p>Restricted access for authorized Aureus dealership personnel only.</p>
+          <p>Restricted access for authorized Torque dealership personnel only.</p>
           <p>
             <Link href="/" className={styles.publicReturnLink}>
-              ← Return to Aureus Motors Public Showroom
+              ← Return to Torque Two-Wheelers Public Website
             </Link>
           </p>
         </div>

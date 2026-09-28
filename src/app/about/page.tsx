@@ -2,19 +2,18 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import styles from './AboutPage.module.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
-import { TestDriveModal } from '@/components/common/TestDriveModal';
+import { TestRideModal } from '@/components/common/TestRideModal';
 
 export default function AboutPage() {
-  const [isTestDriveOpen, setIsTestDriveOpen] = useState(false);
+  const [isTestRideOpen, setIsTestRideOpen] = useState(false);
 
   const pillars = [
     {
-      title: 'Structural & Apron Integrity',
-      desc: 'Forensic digital ultrasound and magnetic paint-depth scanning across 42 chassis contact points. Zero structural compromise or accidental repair tolerance.',
+      title: 'Chassis & Fork Laser Alignment',
+      desc: 'Precision laser runout and frame gauge scanning across all structural weld points. Zero tolerance for bent forks, frame flex, or accidental straightening.',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -22,8 +21,8 @@ export default function AboutPage() {
       ),
     },
     {
-      title: 'Powertrain & Gearbox Calibration',
-      desc: 'Dynamic cylinder compression, valve clearance, and dual-clutch transmission thermal profiling under rigorous peak-torque operational conditions.',
+      title: 'Powertrain & Valve Calibration',
+      desc: 'Dynamic cylinder compression, tappet valve clearances, and clutch plate slip analysis under operational peak-torque thermal conditions.',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="3" />
@@ -32,8 +31,8 @@ export default function AboutPage() {
       ),
     },
     {
-      title: 'ADAS, Sensors & Module Telematics',
-      desc: 'Complete factory-level OBD-II interrogation checking for cleared fault codes, ECU tampering, sensor drifts, and radar millimeter calibration.',
+      title: 'Electronic Fuel Injection & ECU Map',
+      desc: 'OEM diagnostic scanner interrogation checking for cleared fault codes, sensor drift, stator charging voltages, and unapproved ECU tampering.',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="10" />
@@ -43,8 +42,8 @@ export default function AboutPage() {
       ),
     },
     {
-      title: 'Braking Hydraulics & Active Suspension',
-      desc: 'Disc runout tolerances, pad compound thickness (minimum 80% life required), electronic damping, and anti-roll bushing stress evaluations.',
+      title: 'Braking Hydraulics & ABS Modules',
+      desc: 'Disc rotor thickness micrometer scan, pad compound life (minimum 80% required), brake line fluid moisture test, and ABS electronic modulator check.',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <circle cx="12" cy="12" r="10" />
@@ -53,8 +52,18 @@ export default function AboutPage() {
       ),
     },
     {
-      title: 'Provenance & Single-Owner Heritage',
-      desc: 'Direct cross-referencing with authorized OEM dealer service databases across India. Meter-rollback verification with absolute legal indemnity.',
+      title: 'Chain, Sprockets & Suspension',
+      desc: 'Drive chain pitch elongation, sprocket tooth symmetry, rear monoshock damping response, and front telescopic fork seal inspection.',
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+          <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+        </svg>
+      ),
+    },
+    {
+      title: 'Provenance & Single-Owner Title',
+      desc: 'Direct cross-referencing with authorized OEM dealer service networks across India. Odometer rollback verification with absolute legal title indemnity.',
       icon: (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -64,60 +73,49 @@ export default function AboutPage() {
         </svg>
       ),
     },
-    {
-      title: 'Cabin Sterilization & Acoustic Sealed',
-      desc: 'Deep ultrasonic extraction, hospital-grade ozone sterilization, leather moisture replenishment, and acoustic insulation certification.',
-      icon: (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-        </svg>
-      ),
-    },
   ];
 
   return (
     <div className={styles.pageWrapper}>
-      <Navbar onOpenTestDrive={() => setIsTestDriveOpen(true)} />
+      <Navbar onOpenTestRide={() => setIsTestRideOpen(true)} />
 
       <main className={styles.mainContent}>
         <div className={styles.container}>
-          {/* Section 1: Editorial Magazine Hero */}
+          {/* Section 1: Hero */}
           <section className={styles.editorialHero}>
             <div className={styles.heroHeaderArea}>
-              <span className="eyebrow-badge">THE AUREUS MANIFESTO</span>
+              <span className="eyebrow-badge">THE TORQUE MANIFESTO</span>
               <h1 className={styles.heroHeadline}>
-                The Pursuit of <em>Automotive Rectitude</em> in India.
+                The Pursuit of <em>Motorcycle Rectitude</em> in India.
               </h1>
               <p className={styles.heroLeadText}>
-                We established Aureus Motors not to sell more vehicles, but to resolve a fundamental market
-                compromise. For decades, acquiring a pre-owned car in India meant navigating ambiguity, opaque
-                histories, and superficial cosmetic cover-ups. We created an institution built on radical
-                engineering transparency.
+                We founded Torque Two-Wheelers to resolve a pervasive marketplace compromise. For years, buying a
+                pre-owned motorcycle in India meant navigating rolled-back odometers, accident covers, and
+                hidden engine wear. We engineered a platform built on absolute diagnostic transparency.
               </p>
             </div>
 
             {/* Asymmetrical Visual & Philosophy Feature */}
             <div className={styles.asymmetricShowcase}>
               <div className={styles.showcaseImageWrapper}>
-                <Image
-                  src="/images/about_craftsmanship.jpg"
-                  alt="Aureus master engineer performing precision diagnostic inspection"
-                  fill
+                <img
+                  src="/images/bikes/classic_350.jpg"
+                  alt="Torque master diagnostic technician inspecting a motorcycle"
                   className={styles.showcaseImage}
-                  priority
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
 
               <div className={styles.showcaseCaption}>
-                <span className="eyebrow-badge">MASTER DIAGNOSTICS</span>
+                <span className="eyebrow-badge">DIAGNOSTIC RIGOR</span>
                 <h2 className={styles.captionTitle}>
-                  Only 1 in 14 vehicles inspected earns the Aureus Certification seal.
+                  Only 1 in 10 motorcycles inspected earns the Torque Certification seal.
                 </h2>
                 <p className={styles.captionBody}>
-                  Our diagnostic evaluation rejects vehicles for subtle inconsistencies that most secondary
-                  market dealers dismiss: non-OEM paint overspray, sub-millimeter chassis flex, unrecorded
-                  minor water ingress, or micro-tampering of telematics. When you acquire a car from Aureus,
-                  its pedigree is proven beyond technical doubt.
+                  Our diagnostic evaluation rejects bikes for subtle inconsistencies that most street-corner dealers
+                  ignore: sub-millimeter fork bend, aftermarket unmapped exhausts, altered wiring looms, or
+                  unrecorded drops. When you ride out with a motorcycle from Torque, its pedigree is proven beyond
+                  technical doubt.
                 </p>
               </div>
             </div>
@@ -127,74 +125,73 @@ export default function AboutPage() {
           <section className={styles.metricsSection}>
             <div className={styles.metricsGrid}>
               <div className={styles.metricItem}>
-                <span className={styles.metricValue}>2,480+</span>
+                <span className={styles.metricValue}>3,200+</span>
                 <span className={styles.metricLabel}>Curated Deliveries</span>
-                <span className={styles.metricDesc}>Executive & luxury automobiles transferred across India.</span>
+                <span className={styles.metricDesc}>Certified motorcycles handed over to riders across India.</span>
               </div>
 
               <div className={styles.metricItem}>
-                <span className={styles.metricValue}>160/160</span>
+                <span className={styles.metricValue}>120/120</span>
                 <span className={styles.metricLabel}>Audit Checkpoints</span>
-                <span className={styles.metricDesc}>Forensic mechanical, electronic, and structural evaluation.</span>
+                <span className={styles.metricDesc}>Forensic mechanical, electronic, and chassis evaluation.</span>
               </div>
 
               <div className={styles.metricItem}>
                 <span className={styles.metricValue}>100%</span>
                 <span className={styles.metricLabel}>Zero Accident Record</span>
-                <span className={styles.metricDesc}>Zero tolerance for flood, structural, or frame compromise.</span>
+                <span className={styles.metricDesc}>Zero tolerance for frame flex, flood, or structural repair.</span>
               </div>
 
               <div className={styles.metricItem}>
-                <span className={styles.metricValue}>99.4%</span>
-                <span className={styles.metricLabel}>Client Retention</span>
+                <span className={styles.metricValue}>99.2%</span>
+                <span className={styles.metricLabel}>Rider Retention</span>
                 <span className={styles.metricDesc}>Patrons who return to upgrade or recommend our concierge.</span>
               </div>
             </div>
           </section>
 
-          {/* Section 3: The Founding Story & Curator Manifesto */}
+          {/* Section 3: Manifesto */}
           <section className={styles.manifestoSection}>
             <div className={styles.manifestoGrid}>
               <div className={styles.manifestoTitleArea}>
                 <span className="eyebrow-badge">SANCTUARY VALUES</span>
                 <h2 className={styles.manifestoHeading}>
-                  Radical honesty as an engineering philosophy.
+                  Radical transparency as an engineering philosophy.
                 </h2>
               </div>
 
               <div className={styles.manifestoTextColumn}>
                 <p>
-                  In traditional automotive retail, information asymmetry favors the seller. Minor repairs are
-                  concealed, electronic fault codes are temporarily cleared, and meter rollbacks are obscured by
-                  clever detailing.
+                  In traditional two-wheeler retail, information asymmetry favors the seller. Minor accident repairs
+                  are concealed with fresh decals, exhaust blow-by is masked with heavy oil, and meter rollbacks are
+                  rampant.
                 </p>
                 <p>
-                  <strong>Aureus operates as a sanctuary.</strong> Every vehicle dossier includes unvarnished
-                  records: factory paint thickness measurements, ECU scan timestamps, suspension damper wear
-                  coefficients, and tire tread depth micrometer readings. We believe true luxury begins with
-                  truth.
+                  <strong>Torque operates as a sanctuary.</strong> Every motorcycle dossier includes unvarnished
+                  records: factory compression figures, ECU scan logs, brake pad thickness measurements, and chain
+                  wear coefficients. We believe true passion begins with truth.
                 </p>
                 <p>
-                  Our relationship with a patron does not conclude when the car leaves the studio floor. We back
-                  every certified vehicle with our 1-Year Comprehensive Warranty, a 7-Day No-Questions
-                  Exchange privilege, and a Guaranteed Buyback agreement within 24 months.
+                  Our relationship with a rider does not end when you ride off the showroom floor. We back every
+                  certified machine with our 6-Month Powertrain Warranty, a 7-Day Exchange privilege, and a
+                  Guaranteed Buyback agreement within 24 months.
                 </p>
 
                 <div className={styles.curatorSignOff}>
-                  <span className={styles.signOffName}>Devendra Vardhan Singhal</span>
-                  <span className={styles.signOffRole}>Chief Curator & Engineering Director · Aureus Motors</span>
+                  <span className={styles.signOffName}>Sameer V. Rane</span>
+                  <span className={styles.signOffRole}>Chief Curator & Master Technician · Torque Two-Wheelers</span>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* Section 4: The 6 Forensic Inspection Pillars */}
+          {/* Section 4: 6 Forensic Inspection Pillars */}
           <section className={styles.pillarsSection}>
             <div className={styles.sectionCenterHeader}>
               <span className="eyebrow-badge">FORENSIC PRECISION</span>
-              <h2 className={styles.sectionTitle}>The 6 Pillars of the Aureus 160-Point Audit</h2>
+              <h2 className={styles.sectionTitle}>The 6 Pillars of the Torque 120-Point Audit</h2>
               <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem' }}>
-                Conducted by factory-trained master technicians utilizing aerospace-grade diagnostic instruments.
+                Conducted by factory-trained motorcycle technicians utilizing aerospace-grade diagnostic instruments.
               </p>
             </div>
 
@@ -209,38 +206,38 @@ export default function AboutPage() {
             </div>
           </section>
 
-          {/* Section 5: Editorial Testimonial Spread */}
+          {/* Section 5: Quote Spread */}
           <section className={styles.quoteSpreadSection}>
             <div className={styles.quoteContainer}>
               <span className={styles.quoteSymbol}>&ldquo;</span>
               <blockquote className={styles.quoteText}>
-                Acquiring my executive SUV through Aureus felt less like buying a pre-owned vehicle and more like
-                commissioning a tailored timepiece. The technical dossier provided deeper provenance than many
-                new-car dealerships could offer.
+                Acquiring my Hunter 350 through Torque felt less like buying a used bike and more like picking up a
+                precision timepiece. The mechanical dossier provided deeper provenance than most new-bike dealerships
+                could offer.
               </blockquote>
               <div className={styles.quoteAuthor}>
-                <span className={styles.authorName}>Rajeshwar M. Singhania</span>
-                <span className={styles.authorTitle}>Managing Partner · Singhania Capital Advisors, Mumbai</span>
+                <span className={styles.authorName}>Aditya R. Nair</span>
+                <span className={styles.authorTitle}>Creative Director & Motorcycle Tourer · Mumbai</span>
               </div>
             </div>
           </section>
 
-          {/* Section 6: Final Brand CTA */}
+          {/* Section 6: Final CTA */}
           <section className={styles.finalCtaSection}>
             <div className={styles.ctaInner}>
-              <span className="eyebrow-badge">DISCOVER THE DIFFERENCE</span>
-              <h2 className={styles.ctaHeadline}>Experience Curated Automotive Excellence</h2>
+              <span className="eyebrow-badge">EXPERIENCE THE DIFFERENCE</span>
+              <h2 className={styles.ctaHeadline}>Ride With Absolute Confidence</h2>
               <p style={{ color: 'var(--color-text-secondary)', fontSize: '0.95rem', lineHeight: '1.6' }}>
                 Visit our flagship studio in Bandra Kurla Complex, Mumbai, or explore our currently certified
-                collection online.
+                motorcycle collection online.
               </p>
 
               <div className={styles.ctaButtons}>
                 <Link
-                  href="/cars"
+                  href="/bikes"
                   style={{
                     padding: '13px 28px',
-                    background: '#1A1A1A',
+                    background: 'var(--color-text-primary)',
                     color: '#FFFFFF',
                     borderRadius: '8px',
                     fontWeight: 700,
@@ -255,8 +252,8 @@ export default function AboutPage() {
                   style={{
                     padding: '12px 24px',
                     background: 'transparent',
-                    color: '#1A1A1A',
-                    border: '1px solid var(--color-border-subtle)',
+                    color: 'var(--color-text-primary)',
+                    border: '1px solid var(--color-border-strong)',
                     borderRadius: '8px',
                     fontWeight: 600,
                     textDecoration: 'none',
@@ -273,9 +270,9 @@ export default function AboutPage() {
 
       <Footer />
 
-      <TestDriveModal
-        isOpen={isTestDriveOpen}
-        onClose={() => setIsTestDriveOpen(false)}
+      <TestRideModal
+        isOpen={isTestRideOpen}
+        onClose={() => setIsTestRideOpen(false)}
       />
     </div>
   );

@@ -39,31 +39,35 @@
 }
 
 .monogramLetter {
-  font-family: var(--font-family-serif);
+  font-family: var(--font-family-display);
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--color-accent-gold);
+  color: var(--color-accent-copper);
 }
 
 .brandName {
+  font-family: var(--font-family-display);
   font-size: 1.1rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   color: #FFFFFF;
 }
 
 .brandDesc {
+  font-family: var(--font-family-sans);
   font-size: 0.875rem;
+  font-weight: 400;
   color: #9A9EAA;
   line-height: 1.6;
 }
 
 .colTitle {
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-family: var(--font-family-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-accent-gold);
+  color: var(--color-accent-copper);
   margin-bottom: 1.25rem;
 }
 

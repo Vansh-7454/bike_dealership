@@ -1,32 +1,32 @@
 import connectToDatabase from './mongodb';
-import Car from '@/models/Car';
+import Bike from '@/models/Bike';
 import Enquiry from '@/models/Enquiry';
-import TestDriveBooking from '@/models/TestDriveBooking';
-import SellRequest from '@/models/SellRequest';
-import { seedCarsIfEmpty } from './carsService';
+import TestRide from '@/models/TestRide';
+import SellBikeRequest from '@/models/SellBikeRequest';
+import { seedInitialBikesIfEmpty } from './bikesService';
 
-export interface DashboardStats {
-  totalCars: number;
-  availableCars: number;
-  soldCars: number;
+export interface DashboardMetrics {
+  totalBikes: number;
+  availableBikes: number;
+  soldBikes: number;
   newEnquiries: number;
-  pendingTestDrives: number;
+  pendingTestRides: number;
   newSellRequests: number;
   recentEnquiries: Array<{
     _id: string;
     customerName: string;
     phone: string;
     email: string;
-    carTitle?: string;
+    bikeTitle?: string;
     createdAt: string;
     status: string;
   }>;
-  upcomingTestDrives: Array<{
+  upcomingTestRides: Array<{
     _id: string;
     customerName: string;
     phone: string;
     email: string;
-    vehicleTitle: string;
+    bikeTitle: string;
     preferredDate: string;
     preferredTime: string;
     status: string;
@@ -36,115 +36,82 @@ export interface DashboardStats {
     ownerName: string;
     phone: string;
     email: string;
-    vehicleTitle: string;
+    bikeTitle: string;
     expectedPrice?: number | null;
     createdAt: string;
     status: string;
   }>;
 }
 
-interface RawEnquiryDoc {
-  _id: unknown;
-  customerName: string;
-  phone: string;
-  email: string;
-  carSnapshot?: { title?: string } | null;
-  createdAt?: Date;
-  status: string;
-}
-
-interface RawTestDriveDoc {
-  _id: unknown;
-  customerName: string;
-  phone: string;
-  email: string;
-  carSnapshot?: { title?: string } | null;
-  preferredDate?: Date;
-  preferredTime: string;
-  status: string;
-}
-
-interface RawSellRequestDoc {
-  _id: unknown;
-  ownerName: string;
-  phone: string;
-  email: string;
-  carBrand: string;
-  carModel: string;
-  carYear: number;
-  expectedPrice?: number | null;
-  createdAt?: Date;
-  status: string;
-}
-
-export async function getAdminDashboardData(): Promise<DashboardStats> {
+export async function getDashboardMetrics(): Promise<DashboardMetrics> {
   await connectToDatabase();
-  await seedCarsIfEmpty();
+  await seedInitialBikesIfEmpty();
 
   const [
-    totalCars,
-    availableCars,
-    soldCars,
+    totalBikes,
+    availableBikes,
+    soldBikes,
     newEnquiries,
-    pendingTestDrives,
+    pendingTestRides,
     newSellRequests,
     recentEnquiriesRaw,
-    upcomingTestDrivesRaw,
+    upcomingTestRidesRaw,
     recentSellRequestsRaw,
   ] = await Promise.all([
-    Car.countDocuments({ status: { $ne: 'Archived' } }),
-    Car.countDocuments({ status: 'Available' }),
-    Car.countDocuments({ status: 'Sold' }),
+    Bike.countDocuments({ status: { $ne: 'Archived' } }),
+    Bike.countDocuments({ status: 'Available' }),
+    Bike.countDocuments({ status: 'Sold' }),
     Enquiry.countDocuments({ status: 'New' }),
-    TestDriveBooking.countDocuments({ status: 'Pending' }),
-    SellRequest.countDocuments({ status: 'New' }),
+    TestRide.countDocuments({ status: 'Pending' }),
+    SellBikeRequest.countDocuments({ status: 'New' }),
     Enquiry.find().sort({ createdAt: -1 }).limit(5).lean(),
-    TestDriveBooking.find().sort({ preferredDate: 1, createdAt: -1 }).limit(5).lean(),
-    SellRequest.find().sort({ createdAt: -1 }).limit(5).lean(),
+    TestRide.find().sort({ preferredDate: 1, createdAt: -1 }).limit(5).lean(),
+    SellBikeRequest.find().sort({ createdAt: -1 }).limit(5).lean(),
   ]);
 
-  const recentEnquiries = (recentEnquiriesRaw as unknown as RawEnquiryDoc[] || []).map((e) => ({
+  const recentEnquiries = recentEnquiriesRaw.map((e) => ({
     _id: String(e._id),
     customerName: e.customerName,
     phone: e.phone,
     email: e.email,
-    carTitle: e.carSnapshot?.title || 'General Showroom Inquiry',
+    bikeTitle: e.bikeSnapshot?.title,
     createdAt: e.createdAt ? new Date(e.createdAt).toISOString() : new Date().toISOString(),
     status: e.status,
   }));
 
-  const upcomingTestDrives = (upcomingTestDrivesRaw as unknown as RawTestDriveDoc[] || []).map((t) => ({
+  const upcomingTestRides = upcomingTestRidesRaw.map((t) => ({
     _id: String(t._id),
     customerName: t.customerName,
     phone: t.phone,
     email: t.email,
-    vehicleTitle: t.carSnapshot?.title || 'Selected Vehicle',
+    bikeTitle: t.bikeSnapshot?.title || 'Motorcycle Test Ride',
     preferredDate: t.preferredDate ? new Date(t.preferredDate).toISOString() : new Date().toISOString(),
     preferredTime: t.preferredTime,
     status: t.status,
   }));
 
-  const recentSellRequests = (recentSellRequestsRaw as unknown as RawSellRequestDoc[] || []).map((s) => ({
+  const recentSellRequests = recentSellRequestsRaw.map((s) => ({
     _id: String(s._id),
     ownerName: s.ownerName,
     phone: s.phone,
     email: s.email,
-    vehicleTitle: `${s.carYear} ${s.carBrand} ${s.carModel}`,
+    bikeTitle: `${s.year || s.bikeYear || ''} ${s.brand || s.bikeBrand || ''} ${s.model || s.bikeModel || ''}`.trim(),
     expectedPrice: s.expectedPrice,
     createdAt: s.createdAt ? new Date(s.createdAt).toISOString() : new Date().toISOString(),
     status: s.status,
   }));
 
   return {
-    totalCars,
-    availableCars,
-    soldCars,
+    totalBikes,
+    availableBikes,
+    soldBikes,
     newEnquiries,
-    pendingTestDrives,
+    pendingTestRides,
     newSellRequests,
     recentEnquiries,
-    upcomingTestDrives,
+    upcomingTestRides,
     recentSellRequests,
   };
 }
 
+export const getAdminDashboardData = getDashboardMetrics;

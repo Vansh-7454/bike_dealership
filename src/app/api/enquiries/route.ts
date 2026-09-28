@@ -1,64 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createEnquiry, getEnquiries } from '@/lib/enquiryService';
+import { getAdminSession } from '@/lib/adminAuth';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { customerName, phone, email, carId, message, acquisitionPreference, source } = body;
 
-    // Reject attempt to set status or admin fields from client
-    if (body.status && body.status !== 'New') {
+    if (!body.customerName || !body.phone || !body.email) {
       return NextResponse.json(
-        { success: false, error: 'Status cannot be specified during initial enquiry creation' },
+        { success: false, error: 'Name, phone number, and email are required.' },
         { status: 400 }
       );
     }
 
     const enquiry = await createEnquiry({
-      customerName,
-      phone,
-      email,
-      carId,
-      message,
-      acquisitionPreference,
-      source,
+      customerName: body.customerName,
+      phone: body.phone,
+      email: body.email,
+      bikeId: body.bikeId || null,
+      message: body.message,
+      acquisitionPreference: body.acquisitionPreference,
+      source: body.source,
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        message: 'Your inquiry has been logged. Our concierge will be in touch shortly.',
-        data: enquiry,
-      },
-      { status: 201 }
-    );
-  } catch (error: any) {
-    console.error('API /api/enquiries error:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: error.message || 'Failed to submit inquiry. Please try again.',
-      },
-      { status: 400 }
-    );
+    return NextResponse.json({ success: true, enquiry }, { status: 201 });
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Failed to submit enquiry';
+    return NextResponse.json({ success: false, error: msg }, { status: 400 });
   }
 }
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status') || undefined;
-    const enquiries = await getEnquiries(status);
+    const admin = await getAdminSession(request);
+    if (!admin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    return NextResponse.json({
-      success: true,
-      total: enquiries.length,
-      data: enquiries,
-    });
-  } catch (error: any) {
-    return NextResponse.json(
-      { success: false, error: error.message || 'Failed to retrieve enquiries' },
-      { status: 500 }
-    );
+    const { searchParams } = request.nextUrl;
+    const filters = {
+      status: searchParams.get('status') || undefined,
+      search: searchParams.get('search') || undefined,
+      page: searchParams.get('page') ? Number(searchParams.get('page')) : 1,
+      limit: searchParams.get('limit') ? Number(searchParams.get('limit')) : 20,
+    };
+
+    const data = await getEnquiries(filters);
+    return NextResponse.json(data);
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : 'Error retrieving enquiries';
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

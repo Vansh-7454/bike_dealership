@@ -10,7 +10,7 @@ export default function AdminEnquiriesPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState<'all' | 'vehicle' | 'general'>('all');
+  const [typeFilter, setTypeFilter] = useState<'all' | 'bike' | 'general'>('all');
   const [selectedEnquiry, setSelectedEnquiry] = useState<IEnquiryDocument | null>(null);
 
   const fetchEnquiries = useCallback(async () => {
@@ -37,22 +37,22 @@ export default function AdminEnquiriesPage() {
   }, [fetchEnquiries]);
 
   const filteredEnquiries = enquiries.filter((e) => {
-    if (typeFilter === 'vehicle') {
-      return Boolean(e.carId || e.carSnapshot);
+    if (typeFilter === 'bike') {
+      return Boolean(e.bikeId || e.bikeSnapshot);
     }
     if (typeFilter === 'general') {
-      return !e.carId && !e.carSnapshot;
+      return !e.bikeId && !e.bikeSnapshot;
     }
     return true;
   });
 
-  // Update status (inline or modal)
+  // Update status
   const handleStatusChange = async (id: string, newStatus: 'New' | 'Contacted' | 'Closed') => {
     try {
-      const res = await fetch(`/api/admin/enquiries/${id}`, {
+      const res = await fetch('/api/admin/enquiries', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ id, status: newStatus }),
       });
 
       if (res.ok) {
@@ -102,7 +102,7 @@ export default function AdminEnquiriesPage() {
         <div className={styles.titleArea}>
           <h1 className={styles.pageTitle}>Customer Enquiries</h1>
           <p className={styles.pageSubtitle}>
-            Manage incoming purchase inquiries, concierge contact status, and client preferences
+            Manage incoming purchase inquiries, rider studio contact status, and bike preferences
           </p>
         </div>
       </div>
@@ -125,7 +125,7 @@ export default function AdminEnquiriesPage() {
             </svg>
             <input
               type="text"
-              placeholder="Search by customer name, email, phone, car..."
+              placeholder="Search by customer name, email, phone, motorcycle..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className={styles.searchInput}
@@ -136,12 +136,12 @@ export default function AdminEnquiriesPage() {
         <div className={styles.filterSelects}>
           <select
             value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as 'all' | 'vehicle' | 'general')}
+            onChange={(e) => setTypeFilter(e.target.value as 'all' | 'bike' | 'general')}
             className={styles.select}
           >
             <option value="all">All Inquiry Types</option>
-            <option value="vehicle">Vehicle Inquiries Only</option>
-            <option value="general">General Showroom Only</option>
+            <option value="bike">Motorcycle Inquiries Only</option>
+            <option value="general">General Studio Only</option>
           </select>
 
           <select
@@ -164,7 +164,7 @@ export default function AdminEnquiriesPage() {
             <thead>
               <tr>
                 <th>Customer</th>
-                <th>Inquiry Nature & Vehicle</th>
+                <th>Inquiry Nature & Bike</th>
                 <th>Message</th>
                 <th>Received Date</th>
                 <th>Status</th>
@@ -180,7 +180,7 @@ export default function AdminEnquiriesPage() {
                 </tr>
               ) : filteredEnquiries.length > 0 ? (
                 filteredEnquiries.map((enq) => {
-                  const isVehicle = Boolean(enq.carId || enq.carSnapshot);
+                  const isBike = Boolean(enq.bikeId || enq.bikeSnapshot);
 
                   return (
                     <tr key={enq._id}>
@@ -195,20 +195,20 @@ export default function AdminEnquiriesPage() {
                       <td>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <div>
-                            {isVehicle ? (
-                              <span className={styles.typeBadgeVehicle}>Vehicle Inquiry</span>
+                            {isBike ? (
+                              <span className={styles.typeBadgeVehicle}>Motorcycle Inquiry</span>
                             ) : (
-                              <span className={styles.typeBadgeGeneral}>General Showroom</span>
+                              <span className={styles.typeBadgeGeneral}>General Studio</span>
                             )}
                           </div>
-                          <div className={styles.carCell}>
-                            {enq.carSnapshot?.primaryImage ? (
+                          <div className={styles.bikeCell}>
+                            {enq.bikeSnapshot?.primaryImage ? (
                               <Image
-                                src={enq.carSnapshot.primaryImage}
-                                alt={enq.carSnapshot.title || 'Car'}
+                                src={enq.bikeSnapshot.primaryImage}
+                                alt={enq.bikeSnapshot.title || 'Motorcycle'}
                                 width={48}
                                 height={34}
-                                className={styles.carThumb}
+                                className={styles.bikeThumb}
                                 unoptimized
                               />
                             ) : (
@@ -221,7 +221,7 @@ export default function AdminEnquiriesPage() {
                                   display: 'flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
-                                  color: '#38bdf8',
+                                  color: '#C86D3B',
                                 }}
                               >
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -229,8 +229,8 @@ export default function AdminEnquiriesPage() {
                                 </svg>
                               </div>
                             )}
-                            <span className={styles.carTitle}>
-                              {enq.carSnapshot?.title || enq.acquisitionPreference || 'General Concierge'}
+                            <span className={styles.bikeTitle}>
+                              {enq.bikeSnapshot?.title || enq.acquisitionPreference || 'Studio Advisory'}
                             </span>
                           </div>
                         </div>
@@ -332,15 +332,15 @@ export default function AdminEnquiriesPage() {
                 </div>
               </div>
 
-              {/* Vehicle Snapshot */}
-              {selectedEnquiry.carSnapshot ? (
+              {/* Bike Snapshot */}
+              {selectedEnquiry.bikeSnapshot ? (
                 <div className={styles.detailSection}>
-                  <span className={styles.sectionLabel}>Associated Vehicle</span>
-                  <div className={styles.carBanner}>
-                    {selectedEnquiry.carSnapshot.primaryImage && (
+                  <span className={styles.sectionLabel}>Associated Motorcycle</span>
+                  <div className={styles.bikeBanner}>
+                    {selectedEnquiry.bikeSnapshot.primaryImage && (
                       <Image
-                        src={selectedEnquiry.carSnapshot.primaryImage}
-                        alt={selectedEnquiry.carSnapshot.title}
+                        src={selectedEnquiry.bikeSnapshot.primaryImage}
+                        alt={selectedEnquiry.bikeSnapshot.title}
                         width={80}
                         height={55}
                         style={{ borderRadius: '6px', objectFit: 'cover' }}
@@ -349,10 +349,12 @@ export default function AdminEnquiriesPage() {
                     )}
                     <div>
                       <div style={{ fontWeight: 600, color: '#ffffff', fontSize: '0.95rem' }}>
-                        {selectedEnquiry.carSnapshot.year} {selectedEnquiry.carSnapshot.title}
+                        {selectedEnquiry.bikeSnapshot.year} {selectedEnquiry.bikeSnapshot.title}
                       </div>
-                      <div style={{ color: '#c8a97e', fontWeight: 700, fontSize: '0.9rem' }}>
-                        ₹{(selectedEnquiry.carSnapshot.price / 100000).toFixed(2)} Lakh
+                      <div style={{ color: '#C86D3B', fontWeight: 700, fontSize: '0.9rem' }}>
+                        {selectedEnquiry.bikeSnapshot.price >= 100000
+                          ? `₹${(selectedEnquiry.bikeSnapshot.price / 100000).toFixed(2)} Lakh`
+                          : `₹${selectedEnquiry.bikeSnapshot.price.toLocaleString('en-IN')}`}
                       </div>
                     </div>
                   </div>
@@ -360,11 +362,11 @@ export default function AdminEnquiriesPage() {
               ) : (
                 <div className={styles.detailSection}>
                   <span className={styles.sectionLabel}>Inquiry Scope</span>
-                  <div style={{ color: '#38bdf8', fontWeight: 600, fontSize: '0.95rem' }}>
-                    General Showroom Concierge & Advisory
+                  <div style={{ color: '#C86D3B', fontWeight: 600, fontSize: '0.95rem' }}>
+                    General Studio Advisory & Sourcing
                   </div>
                   <div style={{ color: '#94a3b8', fontSize: '0.82rem', marginTop: '2px' }}>
-                    Submitted via Aureus Motors Concierge Portal
+                    Submitted via Torque Two-Wheelers Studio Portal
                   </div>
                 </div>
               )}
@@ -372,7 +374,7 @@ export default function AdminEnquiriesPage() {
               {/* Acquisition Preference */}
               {selectedEnquiry.acquisitionPreference && (
                 <div className={styles.detailSection}>
-                  <span className={styles.sectionLabel}>Financing / Acquisition Preference</span>
+                  <span className={styles.sectionLabel}>Financing / Purchase Preference</span>
                   <div style={{ color: '#e2e8f0', fontSize: '0.9rem' }}>
                     {selectedEnquiry.acquisitionPreference}
                   </div>
@@ -390,7 +392,7 @@ export default function AdminEnquiriesPage() {
               {/* Status Update */}
               <div className={styles.statusChangerRow}>
                 <div>
-                  <span className={styles.sectionLabel}>Concierge Status</span>
+                  <span className={styles.sectionLabel}>Advisor Status</span>
                   <div style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
                     Current status in MongoDB: <strong style={{ color: '#ffffff' }}>{selectedEnquiry.status}</strong>
                   </div>

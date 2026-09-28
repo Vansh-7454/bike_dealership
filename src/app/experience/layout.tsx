@@ -1,13 +1,13 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'The Concierge Buying Experience | Aureus Motors Dealership',
+  title: 'The Acquisition Experience | Torque Two-Wheelers India',
   description:
-    'Discover the bespoke Aureus buying experience: private salon viewings, doorstep vehicle appraisals, transparent digital paperwork, and lifetime relationship management.',
+    'Discover the bespoke Torque two-wheeler acquisition journey: curated digital dossiers, forensic technical inspection, doorstep test rides, transparent financing, and the ride-away handover.',
   openGraph: {
-    title: 'The Aureus Experience | Tailored Automotive Acquisition',
+    title: 'The Torque Experience | Tailored Motorcycle Acquisition',
     description:
-      'Immerse in a redefined automobile purchase experience featuring private viewing suites, certified doorstep test drives, and total legal indemnity.',
+      'Immerse in a redefined motorcycle purchase experience featuring doorstep test rides, certified mechanical dossiers, and total legal title indemnity.',
     type: 'website',
   },
 };

@@ -23,21 +23,23 @@
   align-items: center;
   justify-content: space-between;
   height: 100%;
+  gap: 1rem;
 }
 
 /* Brand Logo */
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
   text-decoration: none;
   color: var(--color-text-primary);
-  group: hover;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .brandMonogram {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border: 1px solid rgba(20, 21, 23, 0.2);
   border-radius: 8px;
   display: flex;
@@ -46,15 +48,16 @@
   background: #FFFFFF;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.3s var(--ease-cinematic);
+  flex-shrink: 0;
 }
 
 .brand:hover .brandMonogram {
-  border-color: var(--color-accent-gold);
+  border-color: var(--color-accent-copper);
   transform: rotate(45deg);
 }
 
 .monogramLetter {
-  font-family: var(--font-family-serif);
+  font-family: var(--font-family-display);
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-text-primary);
@@ -64,7 +67,7 @@
 
 .brand:hover .monogramLetter {
   transform: rotate(-45deg);
-  color: var(--color-accent-gold-dark);
+  color: var(--color-accent-copper);
 }
 
 .brandText {
@@ -73,40 +76,46 @@
 }
 
 .brandName {
-  font-family: var(--font-family-sans);
+  font-family: var(--font-family-display);
   font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-text-primary);
   line-height: 1.1;
 }
 
 .brandTag {
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-family: var(--font-family-sans);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
 /* Desktop Nav Links */
 .navLinks {
   display: flex;
   align-items: center;
-  gap: 2.25rem;
+  gap: clamp(0.75rem, 1.8vw, 1.85rem);
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .navLink {
   text-decoration: none;
+  font-family: var(--font-family-sans);
   font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--color-text-secondary);
   transition: color 0.2s var(--ease-cinematic);
   position: relative;
   padding: 0.35rem 0;
+  white-space: nowrap;
 }
 
 .navLink:hover {
@@ -120,7 +129,7 @@
   left: 0;
   width: 0;
   height: 2px;
-  background-color: var(--color-accent-gold);
+  background-color: var(--color-accent-copper);
   transition: width 0.25s var(--ease-cinematic);
 }
 
@@ -132,43 +141,54 @@
 .navRight {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .locationBadge {
   display: none;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
+  gap: 0.45rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: var(--color-text-secondary);
-  padding: 0.4rem 0.85rem;
+  padding: 0.35rem 0.75rem;
   background: rgba(20, 21, 23, 0.04);
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-border-subtle);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .adminLoginBtn {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+  font-family: var(--font-family-sans);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--color-text-secondary);
-  padding: 0.4rem 0.85rem;
+  padding: 0.4rem 0.8rem;
   background: rgba(20, 21, 23, 0.04);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   border: 1px solid var(--color-border-subtle);
   text-decoration: none;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .adminLoginBtn:hover {
-  color: #a37a3e;
-  border-color: #c8a97e;
-  background: rgba(200, 169, 126, 0.1);
+  color: var(--color-accent-copper);
+  border-color: var(--color-accent-copper);
+  background: rgba(200, 109, 59, 0.08);
   transform: translateY(-1px);
+}
+
+.desktopCta {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .statusDot {
@@ -295,20 +315,20 @@
   gap: 0.5rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #a37a3e;
+  color: var(--color-accent-copper);
   text-decoration: none;
   padding: 0.4rem 0;
   margin-top: 0.5rem;
 }
 
 /* Media Queries */
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   .locationBadge {
     display: inline-flex;
   }
 }
 
-@media (max-width: 868px) {
+@media (max-width: 1040px) {
   .navLinks {
     display: none;
   }

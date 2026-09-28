@@ -30,7 +30,7 @@ const AdminSchema = new Schema<IAdminItem>(
     name: {
       type: String,
       required: true,
-      default: 'Aureus Motors Admin',
+      default: 'Torque Two-Wheelers Admin',
       trim: true,
     },
     role: {

@@ -34,31 +34,39 @@ body {
    =================================================================== */
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
+  font-family: var(--font-family-display);
+  font-weight: 700;
   line-height: 1.15;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: var(--color-text-primary);
 }
 
+.editorial-display {
+  font-family: var(--font-family-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
 .editorial-serif {
-  font-family: var(--font-family-serif);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-family: var(--font-family-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .eyebrow-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  font-family: var(--font-family-sans);
   font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-accent-gold-dark);
+  color: var(--color-accent-copper);
   padding: 0.35rem 0.85rem;
-  background: var(--color-accent-gold-subtle);
-  border: 1px solid rgba(197, 168, 128, 0.25);
-  border-radius: var(--radius-pill);
+  background: var(--color-accent-copper-subtle);
+  border: 1px solid rgba(200, 109, 59, 0.22);
+  border-radius: var(--radius-sm);
 }
 
 /* ===================================================================
@@ -72,18 +80,19 @@ h1, h2, h3, h4, h5, h6 {
   gap: 0.6rem;
   font-family: var(--font-family-sans);
   font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  letter-spacing: 0.015em;
   line-height: 1;
   padding: 0.85rem 1.6rem;
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   cursor: pointer;
   text-decoration: none;
-  transition: all 0.28s var(--ease-cinematic);
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
   user-select: none;
+  white-space: nowrap;
 }
 
 .btn:active {

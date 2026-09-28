@@ -4,8 +4,8 @@ import { SignJWT, jwtVerify } from 'jose';
 import connectToDatabase from './mongodb';
 import Admin from '@/models/Admin';
 
-export const ADMIN_COOKIE_NAME = 'aureus_admin_session';
-const JWT_SECRET = process.env.AUTH_SECRET || 'aureus_motors_secure_admin_jwt_secret_token_2026';
+export const ADMIN_COOKIE_NAME = 'torque_bike_admin_session';
+const JWT_SECRET = process.env.AUTH_SECRET || 'torque_two_wheelers_jwt_secret_token_2026';
 const encodedSecret = new TextEncoder().encode(JWT_SECRET);
 
 export interface AdminSessionPayload {
@@ -77,21 +77,21 @@ export async function seedAdminUser(): Promise<{ created: boolean; email: string
   const count = await Admin.countDocuments();
   if (count > 0) {
     const existing = await Admin.findOne().lean();
-    return { created: false, email: (existing as { email?: string } | null)?.email || 'admin@aureusmotors.in' };
+    return { created: false, email: (existing as { email?: string } | null)?.email || 'admin@torquemoto.in' };
   }
 
-  const email = (process.env.ADMIN_EMAIL || 'admin@aureusmotors.in').toLowerCase().trim();
-  const password = process.env.ADMIN_PASSWORD || 'AureusAdmin2026!';
+  const email = (process.env.ADMIN_EMAIL || 'admin@torquemoto.in').toLowerCase().trim();
+  const password = process.env.ADMIN_PASSWORD || 'TorqueAdmin2026!';
   const hashedPassword = await hashPassword(password);
 
   await Admin.create({
     email,
     password: hashedPassword,
-    name: 'Aureus Motors Principal',
+    name: 'Torque Two-Wheelers Principal',
     role: 'admin',
   });
 
-  console.log(`[Aureus Motors] Initial administrator account created for: ${email}`);
+  console.log(`[Torque Two-Wheelers] Initial administrator account created for: ${email}`);
   return { created: true, email };
 }
 
@@ -128,7 +128,7 @@ export async function authenticateAdmin(
     const token = await signAdminToken(payload);
     return { success: true, token, admin: payload };
   } catch (error: unknown) {
-    console.error('[Aureus Motors] Admin authentication error:', error);
+    console.error('[Torque Two-Wheelers] Admin authentication error:', error);
     return { success: false, error: 'Authentication service temporarily unavailable' };
   }
 }

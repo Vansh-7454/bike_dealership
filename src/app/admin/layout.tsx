@@ -70,19 +70,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       ),
     },
     {
-      label: 'Cars Inventory',
-      href: '/admin/cars',
+      label: 'Bikes Inventory',
+      href: '/admin/bikes',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
-          <circle cx="7" cy="17" r="2" />
-          <path d="M9 17h6" />
-          <circle cx="17" cy="17" r="2" />
+          <circle cx="5.5" cy="17.5" r="3.5" />
+          <circle cx="18.5" cy="17.5" r="3.5" />
+          <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5V14l-3-3 4-3 2 3h3" />
         </svg>
       ),
     },
     {
-      label: 'Enquiries',
+      label: 'Customer Enquiries',
       href: '/admin/enquiries',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -91,8 +90,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       ),
     },
     {
-      label: 'Test Drives',
-      href: '/admin/test-drives',
+      label: 'Test Rides',
+      href: '/admin/test-rides',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -103,11 +102,21 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       ),
     },
     {
-      label: 'Sell Requests',
-      href: '/admin/sell-requests',
+      label: 'Sell Bike Requests',
+      href: '/admin/sell-bikes',
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+      ),
+    },
+    {
+      label: 'Contact Inquiries',
+      href: '/admin/contacts',
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+          <polyline points="22,6 12,13 2,6" />
         </svg>
       ),
     },
@@ -124,9 +133,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <aside className={`${styles.sidebar} ${mobileMenuOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.sidebarHeader}>
           <Link href="/admin" className={styles.brandLink}>
-            <div className={styles.brandIcon}>A</div>
+            <div className={styles.brandIcon} style={{ background: '#C86D3B', color: '#fff', fontWeight: 800 }}>T</div>
             <div className={styles.brandText}>
-              <span className={styles.brandName}>AUREUS</span>
+              <span className={styles.brandName}>TORQUE</span>
               <span className={styles.brandPortal}>Dealership Portal</span>
             </div>
           </Link>
@@ -144,7 +153,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
 
         <nav className={styles.nav}>
-          <span className={styles.navSectionLabel}>Management</span>
+          <span className={styles.navSectionLabel}>Dealership Management</span>
           {navItems.map((item) => {
             const isActive =
               item.href === '/admin'
@@ -166,15 +175,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
         <div className={styles.sidebarFooter}>
           <div className={styles.adminUserCard}>
-            <div className={styles.adminAvatar}>
-              {adminUser?.email ? adminUser.email[0].toUpperCase() : 'A'}
+            <div className={styles.adminAvatar} style={{ background: '#C86D3B' }}>
+              {adminUser?.email ? adminUser.email[0].toUpperCase() : 'T'}
             </div>
             <div className={styles.adminInfo}>
               <span className={styles.adminName}>
-                {adminUser?.name || 'Administrator'}
+                {adminUser?.name || 'Torque Administrator'}
               </span>
               <span className={styles.adminRole}>
-                {adminUser?.email || 'admin@aureusmotors.in'}
+                {adminUser?.email || 'admin@torquemoto.in'}
               </span>
             </div>
           </div>
@@ -204,11 +213,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         {/* Mobile Header Bar */}
         <header className={styles.mobileHeader}>
           <Link href="/admin" className={styles.brandLink}>
-            <div className={styles.brandIcon} style={{ width: 30, height: 30, fontSize: '0.9rem' }}>
-              A
+            <div className={styles.brandIcon} style={{ width: 30, height: 30, fontSize: '0.9rem', background: '#C86D3B' }}>
+              T
             </div>
             <span className={styles.brandName} style={{ fontSize: '0.95rem' }}>
-              Aureus Admin
+              Torque Admin
             </span>
           </Link>
 

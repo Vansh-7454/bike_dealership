@@ -5,27 +5,27 @@ import Link from 'next/link';
 import styles from './AdminDashboard.module.css';
 
 interface DashboardData {
-  totalCars: number;
-  availableCars: number;
-  soldCars: number;
+  totalBikes: number;
+  availableBikes: number;
+  soldBikes: number;
   newEnquiries: number;
-  pendingTestDrives: number;
+  pendingTestRides: number;
   newSellRequests: number;
   recentEnquiries: Array<{
     _id: string;
     customerName: string;
     phone: string;
     email: string;
-    carTitle?: string;
+    bikeTitle?: string;
     createdAt: string;
     status: string;
   }>;
-  upcomingTestDrives: Array<{
+  upcomingTestRides: Array<{
     _id: string;
     customerName: string;
     phone: string;
     email: string;
-    vehicleTitle: string;
+    bikeTitle: string;
     preferredDate: string;
     preferredTime: string;
     status: string;
@@ -35,7 +35,7 @@ interface DashboardData {
     ownerName: string;
     phone: string;
     email: string;
-    vehicleTitle: string;
+    bikeTitle: string;
     expectedPrice?: number | null;
     createdAt: string;
     status: string;
@@ -120,9 +120,9 @@ export default function AdminDashboardPage() {
     <div>
       <div className={styles.dashboardHeader}>
         <div className={styles.titleArea}>
-          <h1 className={styles.pageTitle}>Dealership Dashboard</h1>
+          <h1 className={styles.pageTitle}>Motorcycle Dealership Dashboard</h1>
           <p className={styles.pageSubtitle}>
-            Live operational metrics and customer requests directly connected to MongoDB
+            Live operational metrics and customer ride requests connected to MongoDB (used_bikes)
           </p>
         </div>
 
@@ -167,33 +167,32 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* 6 Real Dealership Operational Metric Cards */}
+      {/* 6 Real Motorcycle Dealership Operational Metric Cards */}
       <section className={styles.statsGrid}>
-        {/* Total Cars */}
+        {/* Total Bikes */}
         <div className={styles.statCard}>
           <div className={styles.statTop}>
             <span className={styles.statLabel}>Total Inventory</span>
             <div className={styles.statIcon}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
-                <circle cx="7" cy="17" r="2" />
-                <path d="M9 17h6" />
-                <circle cx="17" cy="17" r="2" />
+                <circle cx="5.5" cy="17.5" r="3.5" />
+                <circle cx="18.5" cy="17.5" r="3.5" />
+                <path d="M15 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-3 11.5V14l-3-3 4-3 2 3h3" />
               </svg>
             </div>
           </div>
           <div className={styles.statValue}>
-            {loading ? '—' : data?.totalCars ?? 0}
+            {loading ? '—' : data?.totalBikes ?? 0}
           </div>
           <div className={styles.statSubtext}>
-            <span className={styles.statIndicatorBlue}>Active catalog vehicles</span>
+            <span className={styles.statIndicatorBlue}>Certified motorcycles</span>
           </div>
         </div>
 
-        {/* Available Cars */}
+        {/* Available Bikes */}
         <div className={styles.statCard}>
           <div className={styles.statTop}>
-            <span className={styles.statLabel}>Available Cars</span>
+            <span className={styles.statLabel}>Available Bikes</span>
             <div className={styles.statIcon}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="20 6 9 17 4 12" />
@@ -201,17 +200,17 @@ export default function AdminDashboardPage() {
             </div>
           </div>
           <div className={styles.statValue}>
-            {loading ? '—' : data?.availableCars ?? 0}
+            {loading ? '—' : data?.availableBikes ?? 0}
           </div>
           <div className={styles.statSubtext}>
-            <span className={styles.statIndicatorGreen}>Ready for public sale</span>
+            <span className={styles.statIndicatorGreen}>Ready for test ride & sale</span>
           </div>
         </div>
 
-        {/* Sold Cars */}
+        {/* Sold Bikes */}
         <div className={styles.statCard}>
           <div className={styles.statTop}>
-            <span className={styles.statLabel}>Sold Cars</span>
+            <span className={styles.statLabel}>Sold Bikes</span>
             <div className={styles.statIcon}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
@@ -219,10 +218,10 @@ export default function AdminDashboardPage() {
             </div>
           </div>
           <div className={styles.statValue}>
-            {loading ? '—' : data?.soldCars ?? 0}
+            {loading ? '—' : data?.soldBikes ?? 0}
           </div>
           <div className={styles.statSubtext}>
-            <span className={styles.statIndicatorGold}>Delivered to patrons</span>
+            <span className={styles.statIndicatorGold}>Delivered to riders</span>
           </div>
         </div>
 
@@ -240,14 +239,14 @@ export default function AdminDashboardPage() {
             {loading ? '—' : data?.newEnquiries ?? 0}
           </div>
           <div className={styles.statSubtext}>
-            <span className={styles.statIndicatorAmber}>Awaiting concierge reply</span>
+            <span className={styles.statIndicatorAmber}>Awaiting advisor reply</span>
           </div>
         </div>
 
-        {/* Pending Test Drives */}
+        {/* Pending Test Rides */}
         <div className={styles.statCard}>
           <div className={styles.statTop}>
-            <span className={styles.statLabel}>Pending Test Drives</span>
+            <span className={styles.statLabel}>Pending Test Rides</span>
             <div className={styles.statIcon}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -258,7 +257,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
           <div className={styles.statValue}>
-            {loading ? '—' : data?.pendingTestDrives ?? 0}
+            {loading ? '—' : data?.pendingTestRides ?? 0}
           </div>
           <div className={styles.statSubtext}>
             <span className={styles.statIndicatorAmber}>Awaiting slot confirmation</span>
@@ -279,7 +278,7 @@ export default function AdminDashboardPage() {
             {loading ? '—' : data?.newSellRequests ?? 0}
           </div>
           <div className={styles.statSubtext}>
-            <span className={styles.statIndicatorGold}>Awaiting vehicle appraisal</span>
+            <span className={styles.statIndicatorGold}>Awaiting bike valuation</span>
           </div>
         </div>
       </section>
@@ -308,7 +307,7 @@ export default function AdminDashboardPage() {
               <thead>
                 <tr>
                   <th>Customer</th>
-                  <th>Vehicle</th>
+                  <th>Motorcycle</th>
                   <th>Date</th>
                   <th>Status</th>
                 </tr>
@@ -330,8 +329,8 @@ export default function AdminDashboardPage() {
                         </div>
                       </td>
                       <td>
-                        <span className={styles.vehicleTitle} title={enq.carTitle}>
-                          {enq.carTitle}
+                        <span className={styles.vehicleTitle} title={enq.bikeTitle}>
+                          {enq.bikeTitle || 'General Studio Inquiry'}
                         </span>
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>{formatDate(enq.createdAt)}</td>
@@ -354,7 +353,7 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Upcoming Test Drives */}
+        {/* Upcoming Test Rides */}
         <div className={styles.activityCard}>
           <div className={styles.cardHeader}>
             <h2 className={styles.cardTitle}>
@@ -364,9 +363,9 @@ export default function AdminDashboardPage() {
                 <line x1="8" y1="2" x2="8" y2="6" />
                 <line x1="3" y1="10" x2="21" y2="10" />
               </svg>
-              <span>Upcoming Test Drives</span>
+              <span>Upcoming Test Rides</span>
             </h2>
-            <Link href="/admin/test-drives" className={styles.viewAllLink}>
+            <Link href="/admin/test-rides" className={styles.viewAllLink}>
               <span>View All</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polyline points="9 18 15 12 9 6" />
@@ -378,8 +377,8 @@ export default function AdminDashboardPage() {
             <table className={styles.activityTable}>
               <thead>
                 <tr>
-                  <th>Customer</th>
-                  <th>Vehicle</th>
+                  <th>Rider</th>
+                  <th>Motorcycle</th>
                   <th>Date & Time</th>
                   <th>Status</th>
                 </tr>
@@ -388,11 +387,11 @@ export default function AdminDashboardPage() {
                 {loading ? (
                   <tr>
                     <td colSpan={4} className={styles.emptyState}>
-                      Loading test drives...
+                      Loading test rides...
                     </td>
                   </tr>
-                ) : data?.upcomingTestDrives && data.upcomingTestDrives.length > 0 ? (
-                  data.upcomingTestDrives.map((td) => (
+                ) : data?.upcomingTestRides && data.upcomingTestRides.length > 0 ? (
+                  data.upcomingTestRides.map((td) => (
                     <tr key={td._id}>
                       <td>
                         <div className={styles.customerCell}>
@@ -401,13 +400,13 @@ export default function AdminDashboardPage() {
                         </div>
                       </td>
                       <td>
-                        <span className={styles.vehicleTitle} title={td.vehicleTitle}>
-                          {td.vehicleTitle}
+                        <span className={styles.vehicleTitle} title={td.bikeTitle}>
+                          {td.bikeTitle}
                         </span>
                       </td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <div>{formatDate(td.preferredDate)}</div>
-                        <div style={{ fontSize: '0.75rem', color: '#c8a97e' }}>{td.preferredTime}</div>
+                        <div style={{ fontSize: '0.75rem', color: '#C86D3B' }}>{td.preferredTime}</div>
                       </td>
                       <td>
                         <span className={`${styles.statusBadge} ${getStatusBadgeClass(td.status)}`}>
@@ -419,7 +418,7 @@ export default function AdminDashboardPage() {
                 ) : (
                   <tr>
                     <td colSpan={4} className={styles.emptyState}>
-                      No test-drive reservations booked yet.
+                      No test-ride bookings logged yet.
                     </td>
                   </tr>
                 )}
@@ -437,7 +436,7 @@ export default function AdminDashboardPage() {
               </svg>
               <span>Recent Sell Requests</span>
             </h2>
-            <Link href="/admin/sell-requests" className={styles.viewAllLink}>
+            <Link href="/admin/sell-bikes" className={styles.viewAllLink}>
               <span>View All</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polyline points="9 18 15 12 9 6" />
@@ -450,7 +449,7 @@ export default function AdminDashboardPage() {
               <thead>
                 <tr>
                   <th>Owner</th>
-                  <th>Vehicle</th>
+                  <th>Motorcycle</th>
                   <th>Expected</th>
                   <th>Status</th>
                 </tr>
@@ -472,11 +471,11 @@ export default function AdminDashboardPage() {
                         </div>
                       </td>
                       <td>
-                        <span className={styles.vehicleTitle} title={sr.vehicleTitle}>
-                          {sr.vehicleTitle}
+                        <span className={styles.vehicleTitle} title={sr.bikeTitle}>
+                          {sr.bikeTitle}
                         </span>
                       </td>
-                      <td style={{ whiteSpace: 'nowrap', fontSize: '0.85rem', color: '#c8a97e' }}>
+                      <td style={{ whiteSpace: 'nowrap', fontSize: '0.85rem', color: '#C86D3B' }}>
                         {formatPrice(sr.expectedPrice)}
                       </td>
                       <td>
@@ -489,7 +488,7 @@ export default function AdminDashboardPage() {
                 ) : (
                   <tr>
                     <td colSpan={4} className={styles.emptyState}>
-                      No sell-your-car requests logged yet.
+                      No sell-your-bike requests logged yet.
                     </td>
                   </tr>
                 )}

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
-const ADMIN_COOKIE_NAME = 'aureus_admin_session';
-const JWT_SECRET = process.env.AUTH_SECRET || 'aureus_motors_secure_admin_jwt_secret_token_2026';
+const ADMIN_COOKIE_NAME = 'torque_bike_admin_session';
+const JWT_SECRET = process.env.AUTH_SECRET || 'torque_two_wheelers_jwt_secret_token_2026';
 const encodedSecret = new TextEncoder().encode(JWT_SECRET);
 
 export async function middleware(request: NextRequest) {

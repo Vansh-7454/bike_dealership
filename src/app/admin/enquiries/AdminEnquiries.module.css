@@ -14,9 +14,10 @@
 }
 
 .pageTitle {
-  font-family: var(--font-serif, 'Playfair Display', serif);
-  font-size: 1.85rem;
+  font-family: var(--font-family-display);
+  font-size: 1.75rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: #0f172a;
   margin: 0;
 }
@@ -166,12 +167,14 @@
   color: #64748b;
 }
 
+.bikeCell,
 .carCell {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
+.bikeThumb,
 .carThumb {
   width: 48px;
   height: 34px;
@@ -182,6 +185,7 @@
   flex-shrink: 0;
 }
 
+.bikeTitle,
 .carTitle {
   font-weight: 500;
   color: #1e293b;
@@ -322,8 +326,10 @@
 }
 
 .modalTitle {
-  font-family: var(--font-serif, 'Playfair Display', serif);
+  font-family: var(--font-family-display);
   font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: #0f172a;
   margin: 0;
 }
@@ -389,6 +395,7 @@
   background: #f5eedf;
 }
 
+.bikeBanner,
 .carBanner {
   display: flex;
   align-items: center;

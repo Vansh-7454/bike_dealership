@@ -23,21 +23,24 @@
 }
 
 .headline {
-  font-family: var(--font-heading);
+  font-family: var(--font-family-display);
   font-size: clamp(2rem, 3.5vw, 2.75rem);
   font-weight: 700;
   color: #FAF9F6;
   line-height: 1.15;
+  letter-spacing: -0.025em;
 }
 
 .headline em {
-  font-style: italic;
-  font-family: var(--font-serif, serif);
-  color: #C8A97E;
+  font-family: var(--font-family-display);
+  font-style: normal;
+  color: var(--color-accent-copper);
 }
 
 .subheadline {
+  font-family: var(--font-family-sans);
   font-size: 0.95rem;
+  font-weight: 400;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.6;
 }
@@ -83,14 +86,16 @@
 }
 
 .clientName {
-  font-family: var(--font-heading);
+  font-family: var(--font-family-display);
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: #FFFFFF;
 }
 
 .clientVehicle {
+  font-family: var(--font-family-sans);
   font-size: 0.78rem;
+  font-weight: 500;
   color: #DFC39B;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -114,15 +119,18 @@
 }
 
 .invitationTitle {
-  font-family: var(--font-heading);
+  font-family: var(--font-family-display);
   font-size: 1.85rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: #FFFFFF;
   margin-bottom: 0.5rem;
 }
 
 .invitationDesc {
+  font-family: var(--font-family-sans);
   font-size: 0.95rem;
+  font-weight: 400;
   color: rgba(255, 255, 255, 0.75);
   line-height: 1.6;
 }

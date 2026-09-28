@@ -1,111 +1,186 @@
 /**
- * Core Domain Types for Aureus Motors Pre-Owned Platform
- * Designed for future MongoDB / Mongoose schema integration (Phase 2+)
+ * Core Domain Types for Torque Two-Wheelers Pre-Owned Motorcycle Platform
+ * Completely independent bike dealership architecture
  */
 
-export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'Hybrid';
-export type TransmissionType = 'Automatic' | 'Manual' | 'Dual-Clutch' | 'Direct Drive';
-export type BodyType = 'SUV' | 'Sedan' | 'Crossover' | 'Coupe' | 'Hatchback';
-export type CarStatus = 'available' | 'reserved' | 'sold';
-export type UserRole = 'admin' | 'staff' | 'client';
-export type EnquiryStatus = 'new' | 'contacted' | 'resolved' | 'closed';
-export type BookingStatus = 'requested' | 'confirmed' | 'completed' | 'cancelled';
+export type FuelType = 'Petrol' | 'Electric';
+export type TransmissionType = 'Manual' | 'Automatic' | 'CVT';
+export type BikeType =
+  | 'Commuter'
+  | 'Cruiser'
+  | 'Street / Naked'
+  | 'Naked / Roadster'
+  | 'Sports'
+  | 'Sport'
+  | 'Tourer'
+  | 'Scooter'
+  | 'Adventure';
 
-export interface ICarSpecification {
-  powerHp: number;
-  torqueNm: number;
-  acceleration0to100: string;
-  topSpeedKmH?: number;
-  rangeKm?: number;
-  batteryCapacityKwh?: number;
-  seatingCapacity: number;
-  bootSpaceLiters: number;
+export type BikeStatus = 'Available' | 'Sold' | 'Archived' | 'Reserved';
+export type UserRole = 'admin' | 'staff' | 'rider';
+export type EnquiryStatus = 'New' | 'Contacted' | 'Closed';
+export type TestRideStatus = 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
+export type SellBikeStatus =
+  | 'Pending'
+  | 'Under Inspection'
+  | 'Offer Made'
+  | 'Purchased'
+  | 'Rejected'
+  | 'New'
+  | 'Contacted'
+  | 'Closed';
+
+export interface IBikeSpecification {
+  engineCc?: number;
+  engineCC?: number;
+  mileageKmpl?: number;
+  mileage?: number;
+  powerBhp?: number;
+  torqueNm?: number;
+  fuelTankCapacityLiters?: number;
+  kerbWeightKg?: number;
+  seatHeightMm?: number;
+  brakingSystem?: string; // e.g. "Dual Channel ABS"
+  coolingSystem?: string; // e.g. "Air-Oil Cooled"
 }
 
-export interface ICarInspectionItem {
-  category: 'Mechanical' | 'Electrical' | 'Body & Paint' | 'Interior & Glass' | 'Tires & Brakes' | 'Documentation';
-  status: 'passed' | 'reconditioned';
-  notes?: string;
+export interface IBikeInspectionCategory {
+  title: string;
+  status: string;
+  pointsChecked: number;
 }
 
-export interface ICar {
-  id: string;
-  slug: string;
+export interface IBike {
+  _id?: string;
+  id?: string;
+  slug?: string;
   title: string;
   brand: string;
   model: string;
+  variant?: string;
   year: number;
-  variant: string;
   price: number;
   originalMsrp?: number;
-  mileageKm: number;
   fuelType: FuelType;
   transmission: TransmissionType;
-  bodyType: BodyType;
-  ownersCount: number;
-  registrationState: string;
-  registrationYear: number;
-  exteriorColor: string;
-  interiorColor: string;
-  locationCity: string;
-  status: CarStatus;
-  isHeroShowcase?: boolean;
-  featuredImages: {
-    hero: string;
-    front: string;
-    interior: string;
-    rear?: string;
-    side?: string;
-  };
-  gallery: string[];
-  keyHighlights: string[];
-  specs: ICarSpecification;
-  inspectionSummary: {
-    totalPointsInspected: number;
-    passedPoints: number;
-    inspectionDate: string;
-    certificationBadge: string;
-  };
-  createdAt?: string;
-  updatedAt?: string;
+  kilometers: number;
+  bikeType: BikeType;
+  engineCC: number;
+  mileage: number; // kmpl
+  color: string;
+  ownership: string;
+  location: string;
+  description: string;
+  features: string[];
+  images: string[];
+  featured: boolean;
+  status: BikeStatus;
+  inspectionScore?: number; // out of 120 points
+  registrationState?: string;
+  specifications?: IBikeSpecification;
+  specs?: IBikeSpecification;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
 }
 
 export interface IUser {
-  id: string;
+  _id?: string;
+  id?: string;
   name: string;
   email: string;
   phone: string;
   role: UserRole;
-  avatarUrl?: string;
-  createdAt: string;
+  createdAt?: string | Date;
 }
 
 export interface IEnquiry {
-  id: string;
-  carId: string;
-  carTitle: string;
+  _id?: string;
+  id?: string;
+  bikeId?: string | null;
+  bikeTitle?: string;
+  bikeSnapshot?: {
+    title: string;
+    brand: string;
+    model: string;
+    price: number;
+    year: number;
+    engineCC?: number;
+    primaryImage?: string;
+  } | null;
   customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  city: string;
-  message: string;
-  preferredContactMethod: 'phone' | 'whatsapp' | 'email';
+  customerEmail?: string;
+  customerPhone?: string;
+  email?: string;
+  phone?: string;
+  city?: string;
+  message?: string;
+  acquisitionPreference?: string;
+  preferredContactMethod?: 'phone' | 'whatsapp' | 'email';
   status: EnquiryStatus;
-  createdAt: string;
+  createdAt?: string | Date;
 }
 
-export interface ITestDriveBooking {
-  id: string;
-  carId: string;
-  carTitle: string;
+export interface ITestRideBooking {
+  _id?: string;
+  id?: string;
+  bikeId: string;
+  bikeTitle: string;
   customerName: string;
-  customerEmail: string;
-  customerPhone: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  email?: string;
+  phone?: string;
   preferredDate: string;
-  preferredTimeSlot: 'morning' | 'afternoon' | 'evening';
-  showroomLocation: string;
-  drivingLicenseVerified: boolean;
+  preferredTime?: string;
+  preferredTimeSlot?: string;
+  drivingLicenseVerified?: boolean;
+  drivingLicenseNumber?: string;
+  helmetRequired?: boolean;
+  ridingExperience?: string;
+  showroomLocation?: string;
   specialRequests?: string;
-  status: BookingStatus;
-  createdAt: string;
+  message?: string;
+  status: TestRideStatus;
+  createdAt?: string | Date;
+}
+
+export interface ISellBikeRequest {
+  _id?: string;
+  id?: string;
+  ownerName: string;
+  phone: string;
+  email: string;
+  city?: string;
+  bikeBrand?: string;
+  bikeModel?: string;
+  bikeYear?: number;
+  bikeTitle?: string;
+  brand?: string;
+  model?: string;
+  variant?: string;
+  registrationYear?: number;
+  registrationNumber?: string;
+  ownership?: string;
+  condition?: string;
+  kilometers?: number;
+  bikeType?: string;
+  engineCC?: number;
+  expectedPrice?: number | null;
+  location?: string;
+  message?: string;
+  status: SellBikeStatus;
+  createdAt?: string | Date;
+}
+
+export interface IContactEnquiry {
+  _id?: string;
+  id?: string;
+  name: string;
+  phone: string;
+  email: string;
+  topic: string;
+  preferredDate?: string;
+  message: string;
+  status?: EnquiryStatus;
+  createdAt?: string | Date;
 }

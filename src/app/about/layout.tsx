@@ -1,13 +1,13 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Our Heritage & Philosophy | Aureus Motors Dealership India',
+  title: 'Our Heritage & Philosophy | Torque Two-Wheelers India',
   description:
-    'Learn about Aureus Motors—redefining the pre-owned automotive journey with uncompromising inspection standards, complete provenance transparency, and client-first concierge service.',
+    'Learn about Torque Two-Wheelers—redefining the pre-owned motorcycle journey in India with forensic 120-point inspection standards, complete provenance transparency, and rider-first concierge service.',
   openGraph: {
-    title: 'About Aureus Motors | Automotive Integrity & Craftsmanship',
+    title: 'About Torque Two-Wheelers | Motorcycle Integrity & Engineering Ethos',
     description:
-      'Curating and restoring pre-owned automobiles to peak standards. Discover our philosophy, mechanical ethos, and heritage.',
+      'Curating pre-owned motorcycles to peak engineering standards. Discover our philosophy, mechanical ethos, and rider compact.',
     type: 'website',
   },
 };

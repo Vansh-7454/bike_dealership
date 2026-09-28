@@ -26,15 +26,15 @@ if (fs.existsSync(envPath)) {
   });
 }
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/aureus_motors';
-const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@aureusmotors.in').toLowerCase().trim();
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'AureusAdmin2026!';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/used_bikes';
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'admin@torquemoto.in').toLowerCase().trim();
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'TorqueAdmin2026!';
 
 const AdminSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true },
-    name: { type: String, default: 'Aureus Motors Principal' },
+    name: { type: String, default: 'Torque Two-Wheelers Principal' },
     role: { type: String, default: 'admin' },
   },
   { timestamps: true }
@@ -43,14 +43,14 @@ const AdminSchema = new mongoose.Schema(
 const Admin = mongoose.models.Admin || mongoose.model('Admin', AdminSchema);
 
 async function runSeed() {
-  console.log('[Aureus Motors] Connecting to MongoDB...');
+  console.log('[Torque Two-Wheelers] Connecting to MongoDB...');
   try {
     await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 2000 });
   } catch {
-    console.log('[Aureus Motors] Direct connection unavailable, connecting with embedded MongoDB...');
+    console.log('[Torque Two-Wheelers] Direct connection unavailable, connecting with embedded MongoDB...');
     const { MongoMemoryServer } = await import('mongodb-memory-server');
     const mms = await MongoMemoryServer.create({
-      instance: { dbName: 'aureus_motors' },
+      instance: { dbName: 'used_bikes' },
     });
     await mongoose.connect(mms.getUri());
   }
@@ -58,7 +58,7 @@ async function runSeed() {
   const existingCount = await Admin.countDocuments();
   if (existingCount > 0) {
     const existing = await Admin.findOne();
-    console.log(`[Aureus Motors] Admin account already exists: ${existing.email}. No duplicate created.`);
+    console.log(`[Torque Two-Wheelers] Admin account already exists: ${existing.email}. No duplicate created.`);
     await mongoose.disconnect();
     process.exit(0);
   }
@@ -69,16 +69,16 @@ async function runSeed() {
   await Admin.create({
     email: ADMIN_EMAIL,
     password: hashedPassword,
-    name: 'Aureus Motors Principal',
+    name: 'Torque Two-Wheelers Principal',
     role: 'admin',
   });
 
-  console.log(`[Aureus Motors] Successfully created initial Admin account: ${ADMIN_EMAIL}`);
+  console.log(`[Torque Two-Wheelers] Successfully created initial Admin account: ${ADMIN_EMAIL}`);
   await mongoose.disconnect();
   process.exit(0);
 }
 
 runSeed().catch((err) => {
-  console.error('[Aureus Motors] Seed admin error:', err);
+  console.error('[Torque Two-Wheelers] Seed admin error:', err);
   process.exit(1);
 });

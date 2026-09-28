@@ -16,21 +16,25 @@
 }
 
 .headline {
+  font-family: var(--font-family-display);
   font-size: clamp(1.85rem, 3.2vw, 2.75rem);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: var(--color-text-primary);
   line-height: 1.15;
 }
 
 .headline em {
-  font-family: var(--font-family-serif);
-  font-style: italic;
-  font-weight: 400;
+  font-family: var(--font-family-display);
+  font-style: normal;
+  font-weight: 700;
+  color: var(--color-accent-copper);
 }
 
 .subheadline {
+  font-family: var(--font-family-sans);
   font-size: 1rem;
+  font-weight: 400;
   color: var(--color-text-secondary);
   line-height: 1.55;
 }
@@ -84,22 +88,25 @@
 }
 
 .stepNumber {
-  font-family: var(--font-family-sans);
+  font-family: var(--font-family-display);
   font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   color: var(--color-text-muted);
 }
 
 .cardTitle {
+  font-family: var(--font-family-display);
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-text-primary);
   line-height: 1.25;
 }
 
 .cardDesc {
+  font-family: var(--font-family-sans);
   font-size: 0.875rem;
+  font-weight: 400;
   color: var(--color-text-secondary);
   line-height: 1.55;
 }

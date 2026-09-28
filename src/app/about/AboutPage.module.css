@@ -30,24 +30,26 @@
 }
 
 .heroHeadline {
-  font-family: var(--font-heading);
+  font-family: var(--font-family-display);
   font-size: clamp(2.4rem, 4.5vw, 3.8rem);
   font-weight: 700;
   line-height: 1.1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: var(--color-text-primary);
   margin-top: 0.75rem;
   margin-bottom: 1.25rem;
 }
 
 .heroHeadline em {
-  font-style: italic;
-  font-family: var(--font-serif, serif);
-  color: #8C6D3F;
+  font-style: normal;
+  font-family: var(--font-family-display);
+  color: var(--color-accent-copper);
 }
 
 .heroLeadText {
-  font-size: 1.15rem;
+  font-family: var(--font-family-sans);
+  font-size: 1.1rem;
+  font-weight: 400;
   line-height: 1.65;
   color: var(--color-text-secondary);
   max-width: 720px;
@@ -281,16 +283,17 @@
 }
 
 .quoteSymbol {
-  font-family: var(--font-serif, serif);
-  font-size: 4rem;
-  color: #C8A97E;
+  font-family: var(--font-family-display);
+  font-size: 3.5rem;
+  color: var(--color-accent-copper);
   line-height: 1;
 }
 
 .quoteText {
-  font-family: var(--font-heading);
+  font-family: var(--font-family-display);
   font-size: clamp(1.4rem, 2.5vw, 1.95rem);
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.015em;
   line-height: 1.45;
   color: #E8E6E1;
 }

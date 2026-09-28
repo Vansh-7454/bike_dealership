@@ -2,12 +2,13 @@ import mongoose, { Schema, Model } from 'mongoose';
 
 export type EnquiryStatus = 'New' | 'Contacted' | 'Closed';
 
-export interface ICarSnapshot {
+export interface IBikeSnapshot {
   title: string;
   brand: string;
   model: string;
   price: number;
   year: number;
+  engineCC?: number;
   primaryImage: string;
 }
 
@@ -15,8 +16,8 @@ export interface IEnquiryItem {
   customerName: string;
   phone: string;
   email: string;
-  carId?: mongoose.Types.ObjectId | string | null;
-  carSnapshot?: ICarSnapshot | null;
+  bikeId?: mongoose.Types.ObjectId | string | null;
+  bikeSnapshot?: IBikeSnapshot | null;
   message?: string;
   acquisitionPreference?: string;
   status: EnquiryStatus;
@@ -44,7 +45,6 @@ const EnquirySchema = new Schema<IEnquiryItem>(
       trim: true,
       validate: {
         validator: function (v: string) {
-          // Indian / International phone regex: at least 10 digits
           return /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/.test(v.replace(/\s+/g, ''));
         },
         message: 'Please provide a valid phone number (minimum 10 digits)',
@@ -62,18 +62,19 @@ const EnquirySchema = new Schema<IEnquiryItem>(
         message: 'Please provide a valid email address',
       },
     },
-    carId: {
+    bikeId: {
       type: Schema.Types.Mixed,
-      ref: 'Car',
+      ref: 'Bike',
       default: null,
       index: true,
     },
-    carSnapshot: {
+    bikeSnapshot: {
       title: { type: String },
       brand: { type: String },
       model: { type: String },
       price: { type: Number },
       year: { type: Number },
+      engineCC: { type: Number },
       primaryImage: { type: String },
     },
     message: {
@@ -95,15 +96,15 @@ const EnquirySchema = new Schema<IEnquiryItem>(
     },
     source: {
       type: String,
-      default: 'car_detail',
+      default: 'bike_detail',
     },
   },
   {
     timestamps: true,
+    collection: 'enquiries',
   }
 );
 
-// Compound index for querying enquiries by status and creation date
 EnquirySchema.index({ status: 1, createdAt: -1 });
 
 export const Enquiry: Model<IEnquiryItem> =
