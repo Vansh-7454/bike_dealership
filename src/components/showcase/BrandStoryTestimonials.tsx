@@ -20,9 +20,9 @@ export const BrandStoryTestimonials: React.FC = () => {
     },
     {
       quote:
-        'Selling my Pulsar NS200 through their doorstep selling protocol was effortless. Inspection took 20 minutes, firm price agreed, and payment reached my account via RTGS before the bike left my driveway.',
+        'Selling my KTM 390 Duke through their doorstep selling protocol was effortless. Inspection took 20 minutes, firm price agreed, and payment reached my account via RTGS before the bike left my driveway.',
       author: 'Kunal Deshmukh',
-      role: 'Sold 2023 Bajaj Pulsar NS200 · Pune',
+      role: 'Sold 2023 KTM 390 Duke · Pune',
     },
   ];
 

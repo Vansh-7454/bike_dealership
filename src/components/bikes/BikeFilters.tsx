@@ -50,7 +50,7 @@ export const BikeFilters: React.FC<BikeFiltersProps> = ({
           </svg>
           <input
             type="text"
-            placeholder="Search by model, brand, or cc (e.g. Hunter 350, Pulsar, Classic)..."
+            placeholder="Search by model, brand, or cc (e.g. Hunter 350, KTM Duke, Classic)..."
             value={filters.search}
             onChange={(e) => onFilterChange('search', e.target.value)}
             className={styles.searchInput}

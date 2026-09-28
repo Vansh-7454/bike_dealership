@@ -35,14 +35,41 @@ export interface PaginatedBikesResult {
  */
 export async function seedInitialBikesIfEmpty(): Promise<void> {
   await connectToDatabase();
-  const count = await Bike.countDocuments();
-  if (count === 0) {
-    try {
-      await Bike.insertMany(INITIAL_BIKES_SEED);
-      console.log(`[Torque Two-Wheelers] Seeded ${INITIAL_BIKES_SEED.length} verified motorcycles into inventory.`);
-    } catch (err) {
-      console.error('[Torque Two-Wheelers] Error seeding bikes:', err);
+
+  // 1. Purge any deprecated Pulsar records completely from database
+  try {
+    await Bike.deleteMany({
+      $or: [
+        { model: { $regex: 'pulsar', $options: 'i' } },
+        { title: { $regex: 'pulsar', $options: 'i' } },
+        { slug: { $regex: 'pulsar', $options: 'i' } },
+        { images: { $elemMatch: { $regex: 'pulsar', $options: 'i' } } },
+      ],
+    });
+  } catch (err) {
+    console.error('[Torque Two-Wheelers] Error removing deprecated pulsar entries:', err);
+  }
+
+  // 2. Ensure each seed bike is present, updated, and deduplicated
+  try {
+    for (const seed of INITIAL_BIKES_SEED) {
+      if (seed.slug) {
+        const existingList = await Bike.find({ slug: seed.slug });
+        if (existingList.length === 0) {
+          await Bike.create(seed);
+        } else {
+          // If duplicates exist for this slug, remove extras
+          if (existingList.length > 1) {
+            const extraIds = existingList.slice(1).map((b) => b._id);
+            await Bike.deleteMany({ _id: { $in: extraIds } });
+          }
+          // Update the primary record with latest seed data (e.g. clean images)
+          await Bike.updateOne({ _id: existingList[0]._id }, { $set: seed });
+        }
+      }
     }
+  } catch (err) {
+    console.error('[Torque Two-Wheelers] Error synchronizing clean bikes seed:', err);
   }
 }
 
@@ -61,6 +88,9 @@ export async function getBikes(filters: BikeQueryFilters = {}): Promise<Paginate
   } else {
     query.status = { $ne: 'Archived' };
   }
+
+  // Ensure deprecated pulsar records are never returned
+  query.slug = { $not: /pulsar/i };
 
   // Text search on title, brand, model, variant, description
   if (filters.search && filters.search.trim()) {

@@ -197,7 +197,7 @@ export default function ExperiencePage() {
 
               <div className={styles.chapterMedia}>
                 <img
-                  src="/images/bikes/pulsar_ns200.jpg"
+                  src="/images/bikes/ktm_duke_390.jpg"
                   alt="Torque doorstep test ride specialist"
                   className={styles.chapterImage}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}

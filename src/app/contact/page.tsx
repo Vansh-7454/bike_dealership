@@ -292,7 +292,7 @@ export default function ContactPage() {
                     <label className={styles.label}>Message or Bike of Interest</label>
                     <textarea
                       rows={4}
-                      placeholder="Specify motorcycles you wish to inspect (e.g. Hunter 350, Pulsar NS200, Classic 350, FZ-S) or custom inquiry..."
+                      placeholder="Specify motorcycles you wish to inspect (e.g. Hunter 350, KTM 390 Duke, Classic 350, FZ-S) or custom inquiry..."
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       className={styles.textarea}

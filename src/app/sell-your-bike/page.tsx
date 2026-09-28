@@ -352,7 +352,7 @@ export default function SellYourBikePage() {
                         <input
                           type="text"
                           required
-                          placeholder="e.g. Hunter 350 / Classic 350 / Pulsar NS200"
+                          placeholder="e.g. Hunter 350 / Classic 350 / KTM 390 Duke"
                           value={model}
                           onChange={(e) => setModel(e.target.value)}
                           className={styles.formInput}
