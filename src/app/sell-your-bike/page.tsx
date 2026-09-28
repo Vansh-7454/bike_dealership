@@ -160,17 +160,17 @@ export default function SellYourBikePage() {
                     <span className={styles.widgetBadge}>Zero Obligation</span>
                   </div>
 
-                  <div style={{ padding: '0.5rem 0', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
-                      <span style={{ color: '#C86D3B', fontWeight: 700 }}>✓</span>
+                  <div style={{ padding: '0.35rem 0', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.92rem', color: '#F1F5F9', fontWeight: 500, lineHeight: 1.4 }}>
+                      <span style={{ color: '#E58E58', fontWeight: 800, fontSize: '1.05rem', flexShrink: 0 }}>✓</span>
                       <span>Complimentary doorstep technical audit by certified evaluators</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
-                      <span style={{ color: '#C86D3B', fontWeight: 700 }}>✓</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.92rem', color: '#F1F5F9', fontWeight: 500, lineHeight: 1.4 }}>
+                      <span style={{ color: '#E58E58', fontWeight: 800, fontSize: '1.05rem', flexShrink: 0 }}>✓</span>
                       <span>Real secondary market pricing with zero pressure or price chipping</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
-                      <span style={{ color: '#C86D3B', fontWeight: 700 }}>✓</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.92rem', color: '#F1F5F9', fontWeight: 500, lineHeight: 1.4 }}>
+                      <span style={{ color: '#E58E58', fontWeight: 800, fontSize: '1.05rem', flexShrink: 0 }}>✓</span>
                       <span>Guaranteed RC transfer with full legal indemnity bond</span>
                     </div>
                   </div>
