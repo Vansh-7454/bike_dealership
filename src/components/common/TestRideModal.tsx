@@ -139,14 +139,14 @@ export const TestRideModal: React.FC<TestRideModalProps> = ({ isOpen, onClose, b
             <div className={styles.formGroup} style={{ marginBottom: '1.25rem' }}>
               <label className={styles.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span>Selected Motorcycle *</span>
-                <span style={{ fontSize: '0.75rem', color: '#DFC39B', fontWeight: 600 }}>Auto-Associated</span>
+                <span style={{ fontSize: '0.75rem', color: '#C86D3B', fontWeight: 600 }}>Auto-Associated</span>
               </label>
               <div className={styles.selectedVehicleBadge}>
                 <div>
                   <div className={styles.vehicleName}>
                     {activeBike?.title}
                   </div>
-                  <div style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.65)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '0.78rem', color: '#64748B', marginTop: '2px' }}>
                     {activeBike?.year} · {activeBike?.engineCC}cc · {activeBike?.kilometers?.toLocaleString()} km
                   </div>
                 </div>

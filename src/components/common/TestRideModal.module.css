@@ -1,9 +1,9 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(10, 12, 16, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -20,8 +20,8 @@
 }
 
 .modal {
-  background: #14171C;
-  border: 1px solid rgba(200, 169, 126, 0.3);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
   border-radius: 20px;
   width: min(600px, 94vw);
   max-width: 600px;
@@ -29,14 +29,14 @@
   overflow-y: auto;
   overflow-x: hidden !important;
   box-sizing: border-box;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(200, 169, 126, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.05);
   padding: 2.5rem 2.25rem;
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  color: #FFFFFF;
+  color: #0F172A;
 }
 
 @keyframes scaleUp {
@@ -51,20 +51,20 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #CBD5E1;
+  color: #64748B;
   transition: all 0.2s ease;
   z-index: 10;
 }
 
 .closeButton:hover {
-  background: rgba(200, 169, 126, 0.2);
-  border-color: #C8A97E;
+  background: #0F172A;
+  border-color: #0F172A;
   color: #FFFFFF;
   transform: scale(1.05);
 }
@@ -80,7 +80,7 @@
   font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #FAF9F6;
+  color: #0F172A;
   margin: 0;
 }
 
@@ -88,14 +88,14 @@
   font-family: var(--font-family-sans);
   font-size: 0.88rem;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.7);
+  color: #64748B;
   line-height: 1.5;
   margin: 0;
 }
 
 .selectedVehicleBadge {
-  background: rgba(200, 169, 126, 0.08);
-  border: 1px solid rgba(200, 169, 126, 0.28);
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 12px;
   padding: 0.9rem 1.15rem;
   display: flex;
@@ -109,16 +109,16 @@
   font-family: var(--font-family-display);
   font-size: 1rem;
   font-weight: 600;
-  color: #FFFFFF;
+  color: #0F172A;
 }
 
 .vehicleStatus {
   font-family: var(--font-family-sans);
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.74rem;
+  font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #DFC39B;
+  color: #C86D3B;
 }
 
 .form {
@@ -148,11 +148,11 @@
 
 .label {
   font-family: var(--font-family-sans);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.76rem;
+  font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #DFC39B;
+  color: #475569;
 }
 
 .input,
@@ -163,29 +163,31 @@
   box-sizing: border-box;
   padding: 0.85rem 1rem;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid #CBD5E1;
+  background: #FFFFFF;
   font-family: var(--font-family-sans);
   font-size: 0.92rem;
-  color: #FFFFFF;
+  color: #0F172A;
+  color-scheme: light;
   transition: all 0.2s ease;
   outline: none;
 }
 
 .input:focus,
 .select:focus {
-  border-color: #C8A97E;
-  box-shadow: 0 0 0 3px rgba(200, 169, 126, 0.25);
-  background: rgba(255, 255, 255, 0.07);
+  border-color: #C86D3B;
+  box-shadow: 0 0 0 3px rgba(200, 109, 59, 0.15);
+  background: #FFFFFF;
 }
 
 .select option {
-  background-color: #1A1D24;
-  color: #FFFFFF;
+  background-color: #FFFFFF;
+  color: #0F172A;
 }
 
 .input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+  color: #94A3B8;
+  opacity: 1;
 }
 
 .checkboxContainer {
@@ -193,11 +195,11 @@
   align-items: flex-start;
   gap: 0.65rem;
   padding: 0.85rem 1rem;
-  background: rgba(255, 255, 255, 0.04);
+  background: #F8FAFC;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: 0.84rem;
-  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid #E2E8F0;
+  font-size: 0.85rem;
+  color: #475569;
   line-height: 1.45;
   cursor: pointer;
   box-sizing: border-box;
@@ -207,7 +209,7 @@
 .checkboxInput {
   margin-top: 3px;
   cursor: pointer;
-  accent-color: #C8A97E;
+  accent-color: #C86D3B;
 }
 
 .actions {
@@ -223,8 +225,8 @@
 .cancelBtn {
   padding: 12px 20px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #475569;
+  border: 1px solid #CBD5E1;
   border-radius: 10px;
   font-family: var(--font-family-sans);
   font-size: 0.9rem;
@@ -234,15 +236,15 @@
 }
 
 .cancelBtn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #F1F5F9;
+  color: #0F172A;
+  border-color: #94A3B8;
 }
 
 .submitBtn {
   padding: 12px 24px;
-  background: linear-gradient(135deg, #C8A97E 0%, #B8976C 100%);
-  color: #0E1013;
+  background: #0E0F12;
+  color: #FFFFFF;
   border: none;
   border-radius: 10px;
   font-family: var(--font-family-sans);
@@ -253,13 +255,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(200, 169, 126, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .submitBtn:hover {
-  background: linear-gradient(135deg, #DFC39B 0%, #C8A97E 100%);
+  background: #C86D3B;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(200, 169, 126, 0.38);
+  box-shadow: 0 6px 20px rgba(200, 109, 59, 0.25);
 }
 
 .successView {
@@ -275,9 +277,9 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: rgba(46, 125, 82, 0.16);
-  border: 1px solid rgba(46, 125, 82, 0.4);
-  color: #4ADE80;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #047857;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -287,26 +289,26 @@
   font-family: var(--font-family-display);
   font-size: 1.5rem;
   font-weight: 700;
-  color: #FAF9F6;
+  color: #0F172A;
   margin: 0;
 }
 
 .successDesc {
   font-size: 0.92rem;
-  color: rgba(255, 255, 255, 0.75);
+  color: #475569;
   line-height: 1.55;
   max-width: 440px;
   margin: 0;
 }
 
 .bookingRefBadge {
-  background: rgba(200, 169, 126, 0.1);
-  border: 1px dashed rgba(200, 169, 126, 0.4);
+  background: #F8FAFC;
+  border: 1px dashed #CBD5E1;
   border-radius: 10px;
   padding: 0.65rem 1.4rem;
   font-size: 0.88rem;
   font-weight: 700;
-  color: #DFC39B;
+  color: #C86D3B;
 }
 
 @media (max-width: 600px) {
