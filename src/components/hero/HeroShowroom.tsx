@@ -23,7 +23,6 @@ export const HeroShowroom: React.FC<HeroShowroomProps> = ({
 }) => {
   // Video and Playback State
   const [isPlayingInitial, setIsPlayingInitial] = useState(true);
-  const [videoProgress, setVideoProgress] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
 
   // Drag 360 Orbit State
@@ -49,13 +48,6 @@ export const HeroShowroom: React.FC<HeroShowroomProps> = ({
     }
   }, []);
 
-  // Update progress bar during playback
-  const handleTimeUpdate = () => {
-    if (videoRef.current && isPlayingInitial && videoRef.current.duration) {
-      const progress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
-      setVideoProgress(progress);
-    }
-  };
 
   // Video reaches end -> Car is parked head-on in showroom, enable 360 drag
   const handleVideoEnded = () => {
@@ -90,7 +82,6 @@ export const HeroShowroom: React.FC<HeroShowroomProps> = ({
   const handleReplayVideo = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     setIsPlayingInitial(true);
-    setVideoProgress(0);
     currentRotationFraction.current = 0;
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
@@ -294,7 +285,6 @@ export const HeroShowroom: React.FC<HeroShowroomProps> = ({
             playsInline
             muted
             autoPlay
-            onTimeUpdate={handleTimeUpdate}
             onEnded={handleVideoEnded}
           />
 
@@ -407,13 +397,6 @@ export const HeroShowroom: React.FC<HeroShowroomProps> = ({
         </div>
       </div>
 
-      {/* Video Progress Bar (Visible during initial reveal) */}
-      {isPlayingInitial && (
-        <div
-          className={styles.videoProgressBar}
-          style={{ width: `${videoProgress}%` }}
-        />
-      )}
     </section>
   );
 };
