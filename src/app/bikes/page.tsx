@@ -38,6 +38,8 @@ function BikesInventoryContent() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedTestRideBike, setSelectedTestRideBike] = useState<any>(null);
 
+  const isMountedRef = React.useRef(false);
+
   const fetchBikes = useCallback(async (currentFilters: BikeFilterState) => {
     setLoading(true);
     setError(null);
@@ -51,15 +53,23 @@ function BikesInventoryContent() {
       if (currentFilters.transmission !== 'All') params.set('transmission', currentFilters.transmission);
       if (currentFilters.sort) params.set('sort', currentFilters.sort);
       params.set('limit', '24');
+      params.set('t', Date.now().toString());
 
-      const res = await fetch(`/api/bikes?${params.toString()}`);
+      const res = await fetch(`/api/bikes?${params.toString()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      });
+
       if (!res.ok) {
         throw new Error(`Failed to fetch inventory (status: ${res.status})`);
       }
 
       const data = await res.json();
-      setBikes(data.bikes || []);
-      setTotal(data.total || 0);
+      const returnedBikes = data.bikes || [];
+      setBikes(returnedBikes);
+      setTotal(data.total ?? returnedBikes.length);
 
       if (data.brands?.length) setAvailableBrands(data.brands);
       if (data.bikeTypes?.length) setAvailableBikeTypes(data.bikeTypes);
@@ -109,6 +119,12 @@ function BikesInventoryContent() {
   };
 
   useEffect(() => {
+    if (!isMountedRef.current) {
+      isMountedRef.current = true;
+      fetchBikes(filters);
+      return;
+    }
+
     const timer = setTimeout(() => {
       fetchBikes(filters);
     }, 250);

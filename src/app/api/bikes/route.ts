@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getBikes, createBike } from '@/lib/bikesService';
 import { getAdminSession } from '@/lib/adminAuth';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
@@ -24,7 +27,16 @@ export async function GET(request: NextRequest) {
     };
 
     const result = await getBikes(filters);
-    return NextResponse.json({ success: true, ...result });
+    return NextResponse.json(
+      { success: true, ...result },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+        },
+      }
+    );
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Failed to retrieve bikes';
     return NextResponse.json({ error: msg }, { status: 500 });

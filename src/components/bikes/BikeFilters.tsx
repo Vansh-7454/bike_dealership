@@ -27,7 +27,7 @@ export const BikeFilters: React.FC<BikeFiltersProps> = ({
   onFilterChange,
   onResetFilters,
   totalResults,
-  availableBrands = ['Royal Enfield', 'Bajaj', 'Yamaha', 'TVS', 'Honda', 'Hero', 'KTM'],
+  availableBrands = ['Royal Enfield', 'KTM', 'Yamaha', 'TVS', 'Honda', 'Hero'],
   availableBikeTypes = ['Street / Naked', 'Cruiser', 'Commuter', 'Sports', 'Scooter', 'Adventure'],
   availableFuelTypes = ['Petrol', 'Electric'],
 }) => {

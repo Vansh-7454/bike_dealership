@@ -339,7 +339,7 @@ export default function SellYourBikePage() {
                         <input
                           type="text"
                           required
-                          placeholder="e.g. Royal Enfield, Bajaj, Yamaha, Honda"
+                          placeholder="e.g. Royal Enfield, KTM, Yamaha, Honda"
                           value={brand}
                           onChange={(e) => setBrand(e.target.value)}
                           className={styles.formInput}
