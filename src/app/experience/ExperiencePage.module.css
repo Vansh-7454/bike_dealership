@@ -303,30 +303,73 @@
 }
 
 .compactCard {
-  background: var(--color-bg-base);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 14px;
-  padding: 2rem 1.5rem;
+  background: linear-gradient(145deg, #18191E 0%, #111215 100%);
+  border: 1px solid rgba(200, 109, 59, 0.25);
+  border-radius: 16px;
+  padding: 2.25rem 1.65rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.compactCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #C86D3B 0%, #E58E58 100%);
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.compactCard:hover {
+  transform: translateY(-5px);
+  border-color: rgba(229, 142, 88, 0.6);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+}
+
+.compactCard:hover::before {
+  opacity: 1;
+  height: 4px;
 }
 
 .compactCardIcon {
-  color: #8C6D3F;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(200, 109, 59, 0.15);
+  color: #E58E58;
+  border: 1px solid rgba(200, 109, 59, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.compactCard:hover .compactCardIcon {
+  background: rgba(200, 109, 59, 0.25);
+  color: #FFAE7A;
+  border-color: rgba(229, 142, 88, 0.6);
+  transform: scale(1.05);
 }
 
 .compactCardTitle {
   font-family: var(--font-heading);
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: #FFFFFF;
 }
 
 .compactCardDesc {
-  font-size: 0.85rem;
-  line-height: 1.55;
-  color: var(--color-text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #CBD5E1;
 }
 
 /* Final Call To Action */

@@ -158,6 +158,29 @@ export default function AboutPage() {
                 <h2 className={styles.manifestoHeading}>
                   Radical transparency as an engineering philosophy.
                 </h2>
+
+                {/* Dark Luxury Mechanical Covenant Card */}
+                <div className={styles.manifestoCard}>
+                  <div className={styles.manifestoCardHeader}>
+                    <span className={styles.manifestoCardTitle}>Torque Mechanical Covenant</span>
+                    <span className={styles.manifestoCardBadge}>Zero Compromise</span>
+                  </div>
+
+                  <div className={styles.manifestoList}>
+                    <div className={styles.manifestoItem}>
+                      <span className={styles.manifestoCheck}>✓</span>
+                      <span>Chassis laser collimation & zero frame deformation tolerance</span>
+                    </div>
+                    <div className={styles.manifestoItem}>
+                      <span className={styles.manifestoCheck}>✓</span>
+                      <span>Factory compression baseline with live ECU diagnostic logs</span>
+                    </div>
+                    <div className={styles.manifestoItem}>
+                      <span className={styles.manifestoCheck}>✓</span>
+                      <span>Verified single-owner lineage & legal indemnity RC transfer</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className={styles.manifestoTextColumn}>
