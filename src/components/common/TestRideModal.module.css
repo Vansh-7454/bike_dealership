@@ -154,6 +154,11 @@
   background: #FFFFFF;
 }
 
+.input::placeholder {
+  color: #64748B;
+  opacity: 1;
+}
+
 .checkboxContainer {
   display: flex;
   align-items: flex-start;

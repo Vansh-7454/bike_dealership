@@ -161,15 +161,15 @@ export default function SellYourBikePage() {
                   </div>
 
                   <div style={{ padding: '0.5rem 0', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.86rem', color: '#e2e8f0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
                       <span style={{ color: '#C86D3B', fontWeight: 700 }}>✓</span>
                       <span>Complimentary doorstep technical audit by certified evaluators</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.86rem', color: '#e2e8f0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
                       <span style={{ color: '#C86D3B', fontWeight: 700 }}>✓</span>
                       <span>Real secondary market pricing with zero pressure or price chipping</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.86rem', color: '#e2e8f0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', color: 'var(--color-text-secondary)', fontWeight: 500 }}>
                       <span style={{ color: '#C86D3B', fontWeight: 700 }}>✓</span>
                       <span>Guaranteed RC transfer with full legal indemnity bond</span>
                     </div>
@@ -266,7 +266,7 @@ export default function SellYourBikePage() {
                 <form onSubmit={handleSubmit}>
                   {/* SECTION 1: OWNER DETAILS */}
                   <div style={{ marginBottom: '2.5rem' }}>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', color: '#C86D3B', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.12)', paddingBottom: '0.5rem' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', color: '#C86D3B', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.5rem' }}>
                       Owner Details
                     </div>
 
@@ -329,7 +329,7 @@ export default function SellYourBikePage() {
 
                   {/* SECTION 2: BIKE DETAILS */}
                   <div style={{ marginBottom: '2.5rem' }}>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', color: '#C86D3B', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.12)', paddingBottom: '0.5rem' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', color: '#C86D3B', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.5rem' }}>
                       Bike Details
                     </div>
 
@@ -466,7 +466,7 @@ export default function SellYourBikePage() {
 
                   {/* SECTION 3: ADDITIONAL INFORMATION */}
                   <div style={{ marginBottom: '2.5rem' }}>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', color: '#C86D3B', marginBottom: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.12)', paddingBottom: '0.5rem' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 800, letterSpacing: '1px', textTransform: 'uppercase', color: '#C86D3B', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-border-subtle)', paddingBottom: '0.5rem' }}>
                       Additional Information
                     </div>
                     <div className={styles.formGroup}>

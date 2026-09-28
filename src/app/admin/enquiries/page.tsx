@@ -375,7 +375,7 @@ export default function AdminEnquiriesPage() {
               {selectedEnquiry.acquisitionPreference && (
                 <div className={styles.detailSection}>
                   <span className={styles.sectionLabel}>Financing / Purchase Preference</span>
-                  <div style={{ color: '#e2e8f0', fontSize: '0.9rem' }}>
+                  <div style={{ color: '#1E293B', fontSize: '0.9rem', fontWeight: 500 }}>
                     {selectedEnquiry.acquisitionPreference}
                   </div>
                 </div>

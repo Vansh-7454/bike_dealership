@@ -233,7 +233,7 @@ export default function AdminTestRidesPage() {
 
                       <td>
                         <div className={styles.locationCell}>
-                          <span style={{ fontWeight: 600, color: '#e2e8f0', fontSize: '0.85rem' }}>
+                          <span style={{ fontWeight: 600, color: '#1E293B', fontSize: '0.85rem' }}>
                             {location}
                           </span>
                           {b.message && (

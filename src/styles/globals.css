@@ -228,3 +228,17 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb:hover {
   background: #A6A39B;
 }
+
+/* ===================================================================
+   FORM CONTROLS & HIGH-CONTRAST INPUTS
+   =================================================================== */
+input, select, textarea {
+  color-scheme: light;
+  color: var(--color-text-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #64748B;
+  opacity: 1;
+}

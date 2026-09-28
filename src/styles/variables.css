@@ -7,6 +7,7 @@
 :root {
   /* Surface & Background Palette (Off-White, Soft Grey, Pure White) */
   --color-bg-main: #F9F8F5;
+  --color-bg-base: #F9F8F5;
   --color-bg-secondary: #F2EFEB;
   --color-bg-tertiary: #E8E5DF;
   --color-bg-surface: #FFFFFF;
